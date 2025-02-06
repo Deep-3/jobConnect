@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2557a7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            background-color: #ffffff;
+            padding: 20px;
+        }
+        .job-details {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: capitalize;
+        }
+
+        /* Status-specific colors */
+        .status-reviewed {
+        color: #FFA500; 
+        }
+
+        .status-shortlisted {
+        color: #2196F3;  
+        }
+
+        .status-rejected {
+        color: #DC3545;  
+        }
+
+        .status-accepted {
+            color: #28A745;  
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2557a7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job Application Confirmation</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear Applicant,</p>
+            
+            <p>Your job application has been successfully submitted. Here are the details of your application:</p>
+
+            <div class="job-details">
+                <h2>{{job.title}}</h2>
+                <p><strong>Company:</strong> {{job.company.companyName}}</p>
+                <p><strong>Location:</strong> {{job.location}}</p>
+                <p><strong>Salary:</strong> {{job.salary}}</p>
+                <p><strong>Application Status:</strong>  <span class="status-badge status-{{status}}">{{status}}</span></span></p>
+                <p><strong>Application Date:</strong> {{createdAt}}</p>
+            </div>
+
+            <h3>Job Description:</h3>
+            <p>{{job.description}}</p>
+
+            <p><strong>Next Steps:</strong></p>
+            <ul>
+                <li>Our hiring team will review your application</li>
+                <li>You will receive updates about your application status</li>
+                <li>We may contact you for additional information or to schedule an interview</li>
+            </ul>
+
+            <p>If you have any questions about your application, please don't hesitate to contact us.</p>
+
+            <a href="#" class="button">Track Your Application</a>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message. Please do not reply to this email.</p>
+            <p>© {{currentYear}} {{job.company.companyName}}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
