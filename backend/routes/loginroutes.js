@@ -9,7 +9,7 @@ router.get('/logout',loginController.logout);
 router.get('/getuser',async(req,res)=>{
     
     const user=req.user;
-    console.log(user);
+    // console.log(user);
     return res.status(200).json({
         success:true,
         user:user || null

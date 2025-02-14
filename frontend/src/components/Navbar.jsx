@@ -145,7 +145,6 @@ const navigate=useNavigate();
              }
                {isLogin &&
               <Link
-                to="/Logout" 
                 className="px-4 py-2 text-[#0B877D] font-medium hover:bg-[#0B877D]/10 rounded-lg"
               >
                 <button onClick={logoutHandler}>Logout</button>
