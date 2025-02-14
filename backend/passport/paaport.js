@@ -25,7 +25,7 @@ passport.use(new LocalStrategy(
     }
       
       if (!user) {
-        return done(null, false, { message: 'Invalid email or password' });
+        return done(null, false, { message: 'User does not exists' });
       }
 
       // If passwords don't match

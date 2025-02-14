@@ -7,9 +7,9 @@ const {checkRegistrationFlow}=require('../middleware/auth')
 
 router.post('/', userController.createUser);
 
-router.use(checkRegistrationFlow);
+// router.use(checkRegistrationFlow);
 
-  router.get('/select-role', userController.selectRole);
+  router.post('/select-role', userController.selectRole);
 // Route for user registration and OTP sending
 
 // Route for OTP verification

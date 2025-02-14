@@ -2,15 +2,15 @@
 const db=require('../models')
 exports.checkRegistrationFlow = (req, res, next) => {
     // First check if email verification is pending
-    // if (req.session.verifyEmail) {
-    //     return res.redirect('/users/verifyotp');
-    //   }
+    if (req.session.verifyEmail) {
+        return res.redirect('/users/verifyotp');
+      }
   
     // Then check authentication and roles
     if (req.isAuthenticated()) {
-    //   if (req.user.pendingRegistration) {
-    //     return res.redirect('/users/select-role');
-    //   }
+      if (req.user.pendingRegistration) {
+        return res.redirect('/users/select-role');
+      }
       if (req.user.role==='employee') {
         return res.redirect('/employee');
       }

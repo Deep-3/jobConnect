@@ -85,7 +85,16 @@ exports.callbackLinkedin= async (req, res) => {
     
     if (user && user.authProvider !== 'linkedin') {
       
-         return res.send({message: `This email is already registered with ${user.authProvider}`})
+      return res.send(`
+        <script>
+          window.opener.postMessage(
+            { success: false, message: 'This Email alredy register with ${user.authProvider}' },
+            '${process.env.FRONTEND_URL}'
+          );
+          window.close();
+        </script>
+      `);
+        
     
   }
 
@@ -101,14 +110,58 @@ exports.callbackLinkedin= async (req, res) => {
 
     // Store in session
     req.login(tempUser, (err) => {
-      if (err) throw err;
-      res.redirect('/users/select-role');
+      if (err){
+        return res.send(`
+          <script>
+            window.opener.postMessage(
+              { success: false, message: 'Registreation failed' },
+              '${process.env.FRONTEND_URL}'
+            );
+            window.close();
+          </script>
+        `);
+      };
+      return res.send(`
+        <script>
+          window.opener.postMessage(
+            { 
+              success: true, 
+              isNewUser: true,
+              message: 'Please select your role'
+            },
+            '${process.env.FRONTEND_URL}'
+          );
+          window.close();
+        </script>
+      `);
     });
   } else {
     // Existing user - login and redirect to dashboard
-    req.login(user, (err) => {
-      if (err) throw err;
-      res.redirect('/');
+    req.login(user, (loginErr) => {
+      if (loginErr) {
+        return res.send(`
+          <script>
+            window.opener.postMessage(
+              { success: false, message: 'Login failed' },
+              '${process.env.FRONTEND_URL}'
+            );
+            window.close();
+          </script>
+        `);
+      }
+      return res.send(`
+        <script>
+          window.opener.postMessage(
+            { 
+              success: true, 
+              isNewUser: false,
+              message: 'Login successful'
+            },
+            '${process.env.FRONTEND_URL}'
+          );
+          window.close();
+        </script>
+      `);
     });
   }
 } catch (error) {

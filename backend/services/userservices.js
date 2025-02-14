@@ -3,6 +3,7 @@ const User=db.User;
 const { sendOtp } = require('../utils/otpmail');
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
+const { matchesGlob } = require('path');
 
 exports.createUser = async (userData, res) => {
     try {
@@ -43,9 +44,11 @@ exports.createUser = async (userData, res) => {
       return { error: error.message || "An unexpected error occurred" };
     }
   };
-  exports.verifyOtp = async (userEmail, otpInput, req, res) => {
+  exports.verifyOtp = async (userEmail, otpInput,resend, req, res) => {
     try {
-      const tempUser = req.session.tempUser;
+
+
+      const tempUser =  req.session.tempUser;
   
       if (!tempUser) {
         return res.status(400).json({
@@ -55,7 +58,7 @@ exports.createUser = async (userData, res) => {
       }
   
       // Check if OTP is expired
-      if (new Date() > new Date(tempUser.otpExpiry)) {
+      if (new Date() > new Date(tempUser.otpExpiry) || resend) {
         // Generate new OTP
         const newOtp = crypto.randomInt(100000, 999999).toString();
         const newOtpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
@@ -75,6 +78,8 @@ exports.createUser = async (userData, res) => {
         });
       }
   
+        console.log("otpinput",otpInput);
+        console.log(tempUser.otp);  
       // Verify OTP if not expired
       if (tempUser.otp != otpInput) {
         return res.status(400).json({
@@ -82,7 +87,7 @@ exports.createUser = async (userData, res) => {
           message: 'Invalid OTP'
         });
       }
-  
+     
       // Create temporary user for role selection
       const pendingUser = {
         pendingRegistration: true,
@@ -94,17 +99,29 @@ exports.createUser = async (userData, res) => {
       };
   
       // Clear verify email from session
+    
       // Login with temporary user
+
       req.login(pendingUser, (err) => {
         if (err) {
-          return res.status(500).json({
-            success: false,
-            message: 'Login failed'
-          });
+          console.error('Login error:', err);
+          next(err)
         }
-        return res.redirect('/users/select-role');
+        delete req.session.tempUser;
+        delete req.session.verifyEmail;
+    
+        return res.status(200).json({
+          success: true,
+          message: "Email verified successfully"
+        });
+
       });
   
+   
+    // Clear temp data after successful login
+  
+     
+      
     } catch (error) {
       console.error('OTP verification error:', error);
       return res.status(500).json({
@@ -121,7 +138,7 @@ exports.createUser = async (userData, res) => {
         email: userData.email,
         password: userData.password,
         role: role,
-        authProvider: 'local',
+        authProvider: userData.authProvider || 'local',
         isVerified: true
       }, { transaction });
 

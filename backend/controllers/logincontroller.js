@@ -44,7 +44,6 @@ exports.login = async(req, res, next) => {
       // Normal login for verified users with roles
       req.login(user, (err) => {
         if (err) return next(err);
-        req.flash('success', 'Login successful');
         return res.redirect('/');
       });
 

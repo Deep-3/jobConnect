@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const cookieParser = require('cookie-parser');
 const express=require('express');
 const app=express();
 const useRoutes=require('./routes/userroutes');
@@ -26,13 +26,13 @@ app.use(fileUpload({
   },}));
 
 
-// Basic CORS setup
-// app.use(cors({
-//     origin: process.env.FRONTEND_URL,  // Which domains can access
-//     credentials: true,                 // Allow cookies
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed methods
-//     allowedHeaders: ['Content-Type', 'Authorization']  // Allowed headers
-// }));
+
+app.use(cors({
+    origin: ['http://localhost:5173'],  // Which domains can access
+    credentials: true,                 // Allow cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Allowed headers
+}));
 // const corsConfig = {
 //   origin: process.env.NODE_ENV === 'production'
 //       ? process.env.FRONTEND_URL  // Production: only allow your frontend
@@ -49,16 +49,29 @@ const sessionStore = new SequelizeStore({
 
 sessionStore.sync();
 
-app.use(session({ 
-   secret: 'hellodeep',
-   resave: false, 
-   saveUninitialized: true, 
-   store:sessionStore,
-   cookie: { secure: false,
-    // sameSite: 'none',  // Required for cross-origin
-      maxAge:24*60*60*1000
-     } 
+app.use(cookieParser());
+
+app.use(session({
+  secret: 'hellodeep',
+  resave: false,
+  rolling:true,
+  saveUninitialized: true,
+  // name: 'connect.sid',  // Make sure this matches exactly
+  store: sessionStore,
+  cookie: {
+    path: '/',
+    httpOnly: true,
+    secure: false,
+    maxAge: 24 * 60 * 60 * 1000,
+    sameSite: 'lax',
+  }
 }));
+
+app.use((req, res, next) => {
+  console.log('Cookies received:', req.cookies);  // Incoming cookies
+  console.log('Session:', req.session);          // Session data
+  next();
+});
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -67,7 +80,7 @@ app.use(passport.session());
 //     // console.log('User:', req.user);  // Check what user is in the session
 //     next();
 //   });
-app.use(flash());
+
 
 // app.use((req, res, next) => {
 //   // Makes flash messages available to all views
@@ -112,7 +125,7 @@ const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
   console.log(req.user)
     if (req.user) {
-      res.send(`Hello, ${req.user.name} ${req.flash('success')}`);  // Access `req.user.name` or any other property
+      res.send(`Hello, ${req.user.name}`);  // Access `req.user.name` or any other property
     } else {
       res.send('Hello, guest!');
     }

@@ -4,15 +4,22 @@ const db=require('../models')
 
 exports.createUser = async (req, res) => {
   try {
-    const result = await userService.createUser(req.body);
+
+    const existingSessionId = req.sessionID;
+    console.log('Existing session:', existingSessionId);
+    const result = await userService. createUser(req.body);
     
     if (result?.error) {
       return res.status(400).json({ error: result.error });
     }
+  
 
     // Store temp user data in session
     req.session.tempUser = result.tempUser;
-    req.session.verifyEmail = result.email;
+    req.session.verifyEmail = result.email
+
+
+    console.log("after create user",req.sessionID,req.cookies);
 
     res.status(201).json({
       success: true,
@@ -28,10 +35,17 @@ exports.createUser = async (req, res) => {
 
 exports.verifyOtp = async (req, res) => {
   try {
-      const {  otp } = req.body;
-      
+      const { otp,resend } = req.body;
+      const resendOtp=resend || false;
+
       // If email not in body, use session email
-      const userEmail =req.session.verifyEmail;
+      const userEmail = req.session.verifyEmail;
+
+      
+      console.log('1. Starting OTP verification');
+      console.log('Current session:', req.sessionID);
+      console.log('Session data:', req.session);
+      
       if (!userEmail) {
           return res.status(400).json({ 
               success: false, 
@@ -40,7 +54,7 @@ exports.verifyOtp = async (req, res) => {
       }
  
       // Call service function
-      await userService.verifyOtp(userEmail, otp,req, res);      
+      await userService.verifyOtp(userEmail, otp,resendOtp,req, res);      
   } catch (error) {
       res.status(400).json({ 
           success: false, 
@@ -52,26 +66,31 @@ exports.verifyOtp = async (req, res) => {
 exports.selectRole=async (req, res) => {
   const transaction = await db.sequelize.transaction();
   try {
+    
     if (!req.user.pendingRegistration) {
       return res.status(400).json({ error: 'Invalid request' });
     }
+    
 
-    // const { role } = req.body;
-    const user = await userService.createUserWithRole(req.user, 'jobseeker', transaction);
+    const { role } = req.body;
+    
+    const user = await userService.createUserWithRole(req.user, role, transaction);
     await transaction.commit();
 
-    
-    delete req.session.verifyEmail;
-    delete req.session.tempUser;
 
     // Login as the new user
     req.login(user, (err) => {
       if (err) {
         throw err;
       }
-      res.redirect('/');
+      return res.status(200).json({ 
+        message: 'Role selected successfully',
+        user: user 
+      });
     });
 
+  
+  
   } catch (error) {
     await transaction.rollback();
     console.error('Role selection error:', error);

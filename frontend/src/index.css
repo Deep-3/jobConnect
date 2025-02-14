@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+
+  
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevents double scrollbar */
+}
+
+/* If you want to add a shadow under navbar */
+.sticky {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
