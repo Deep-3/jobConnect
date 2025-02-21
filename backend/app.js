@@ -8,15 +8,23 @@ const googleroutes=require('./routes/googleauthroutes')
 const linkedinroutes=require('./routes/linkedinroutes')
 const employerroutes=require('./routes/employerroutes')
 const jobseekerroutes=require('./routes/jobroutes')
+const notificationroutes=require('./routes/notificationroutes')
 const session = require('express-session');
-const flash = require('connect-flash');
-
+const http = require('http');
+const server=http.createServer(app);
+const SocketIO=require('socket.io')
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sequelize=require('./config/db')
-
+const db=require('./models/index')
 const passport=require('./passport/paaport')
 const cors = require('cors');
-
+const io=SocketIO(server,{
+  cors: {
+    origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST'],
+    credentials: true
+  } 
+});
 const fileUpload = require('express-fileupload');
 
 app.use(fileUpload({
@@ -101,6 +109,7 @@ app.use('/gauth',googleroutes)
 app.use('/lauth',linkedinroutes)
 app.use('/employer', employerroutes)
 app.use('/jobseeker',jobseekerroutes)
+app.use('/notifications',notificationroutes);
 const PORT = process.env.PORT || 3000;
 
 
@@ -121,6 +130,77 @@ const PORT = process.env.PORT || 3000;
 //       failureFlash: true
 //   })(req, res, next);
 // });
+
+global.connectedUsers = new Map();
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+
+  socket.on('userConnected', async(userId) => {
+      if (!global.connectedUsers.has(userId)) {
+          global.connectedUsers.set(userId, []);
+      }
+      global.connectedUsers.get(userId).push(socket.id);
+
+      try {
+          const pendingNotifications = await db.Notification.findAll({
+              where: {
+                  userId: userId,
+                  isDelivered: false
+              },
+              order: [['createdAt', 'DESC']]
+          });
+
+          if (pendingNotifications.length > 0) {
+              pendingNotifications.forEach(notification => {
+                  // Ensure consistent notification format
+                  const notificationData = {
+                      id: notification.id,
+                      data: notification.data,
+                      isRead: notification.isRead,
+                      createdAt: notification.createdAt,
+                      type: notification.type,
+                      message: notification.message
+                  };
+                  
+                  socket.emit('newApplication', notificationData);
+              });
+
+              // Mark notifications as delivered
+              await db.Notification.update(
+                  { isDelivered: true },
+                  {
+                      where: {
+                          id: pendingNotifications.map(n => n.id)
+                      }
+                  }
+              );
+          }
+      } catch (error) {
+          console.error('Error handling pending notifications:', error);
+      }
+  });
+
+    socket.on('disconnect', () => {
+        for (let [userId, socketIds] of global.connectedUsers.entries()) {
+            const index = socketIds.indexOf(socket.id);
+            if (index !== -1) {
+                socketIds.splice(index, 1);
+                console.log(`User ${userId} disconnected, socket removed: ${socket.id}`);
+
+                if (socketIds.length === 0) {
+                    global.connectedUsers.delete(userId);
+                }
+                console.log('User disconnected:', userId);
+                console.log('All connected users:', Array.from(global.connectedUsers.entries()));
+
+                break;
+            }
+        }
+    });
+});
+
+global.io = io;
+
 
 app.get('/', (req, res) => {
   console.log(req.user)
@@ -153,6 +233,28 @@ app.get('/', (req, res) => {
     // console.log(success)
     res.send('<a href="/lauth/linkedin">login with linkedin</a><br><a href="/gauth/google">login with google</a>')
   })
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-  // kem cho badha18008969999
+  app.post('/send',async(req,res)=>
+  {
+    const msg=req.body.msg;
+
+    io.emit('pushnotification',{
+      msg
+    })
+   res.status(200).send({
+      msg:'message sent'
+    })
+
+    io.on('connection',
+      (socket)=>
+        {
+          console.log('a new client connected',socket);
+          socket.on('disconnect', () => {
+            console.log('a client disconnected');
+            });
+        }
+    )
+  })
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+  module.exports={connectedUsers}

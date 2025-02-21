@@ -1,28 +1,46 @@
+/* App.css */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100vh;
 }
 
-.active
-{
-  color: red;
+body {
+  margin: 0;
+  padding: 0;
 }
 
-@keyframes progress {
-  0% { width: 0; }
-  50% { width: 70%; }
-  100% { width: 100%; }
+/* Smooth transitions */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
 }
 
-.animate-progress {
-  animation: progress 2s ease-in-out infinite;
+/* Custom scrollbar */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
 }
 
-/* Optional: For smoother animations */
-* {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: #0B877D;
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background: #097267;
+}
+
+/* For Firefox */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #0B877D #f1f1f1;
+}
+
+@media (min-width: 1024px) {
+  .lg-ml-240 {
+    margin-left: 240px;
+  }
+}

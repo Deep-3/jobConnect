@@ -65,13 +65,15 @@ const SignUp = ({setisLogin}) => {
     }
   };
 
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white p-8">
-      <div className="bg-white p-10 rounded-2xl shadow-lg w-full max-w-[440px]">
-        <h2 className="text-2xl text-slate-800 mb-2 text-center">Create Account</h2>
-        <p className="text-slate-500 text-center mb-8">Sign up to get started</p>
+    <div className="fixed inset-0 flex items-center justify-center bg-white">
+      <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-[400px] mx-4">
+        <h2 className="text-2xl text-slate-800 mb-1.5 text-center">Create Account</h2>
+        <p className="text-slate-500 text-center mb-5">Sign up to get started</p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
+          {/* Name Input */}
           <div className="relative">
             <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
@@ -81,10 +83,11 @@ const SignUp = ({setisLogin}) => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full py-3.5 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
+              className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
             />
           </div>
 
+          {/* Email Input */}
           <div className="relative">
             <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
@@ -94,10 +97,11 @@ const SignUp = ({setisLogin}) => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full py-3.5 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
+              className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
             />
           </div>
 
+          {/* Password Fields */}
           {['password', 'confirmPassword'].map((field) => (
             <div className="relative" key={field}>
               <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -108,7 +112,7 @@ const SignUp = ({setisLogin}) => {
                 value={formData[field]}
                 onChange={handleChange}
                 required
-                className="w-full py-3.5 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
+                className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
               />
               <span
                 onClick={() => setShowPassword(prev => ({...prev, [field]: !prev[field]}))}
@@ -119,10 +123,11 @@ const SignUp = ({setisLogin}) => {
             </div>
           ))}
 
+          {/* Submit Button */}
           <button
             type="submit"
             disabled={isLoading}
-            className={`bg-[#0B877D] text-white py-3.5 rounded-lg text-base font-medium 
+            className={`w-full bg-[#0B877D] text-white py-3 rounded-lg text-base font-medium 
               ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#097267]'} 
               transition-colors flex items-center justify-center`}
           >
@@ -140,36 +145,39 @@ const SignUp = ({setisLogin}) => {
           </button>
         </form>
 
-        <div className="text-center my-6 relative">
+        {/* Divider */}
+        <div className="text-center my-3 relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200"></div>
           </div>
           <span className="relative bg-white px-4 text-sm text-slate-500">or continue with</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-      
-          <button className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-red-600 hover:text-red-600 transition-all"
-           onClick={()=>handleSocialLogin('google',setisLogin)}
+        {/* Social Buttons */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+          <button 
+            onClick={() => handleSocialLogin('google', setisLogin)}
+            className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-red-600 hover:text-red-600 transition-all"
           >
             <FcGoogle />
             <span>Google</span>
-            </button>
-
-            <button 
-            className="flex items-center justify-center gap-2 py-3 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all"
-           onClick={()=>handleSocialLogin('linkedin',setisLogin)}
-            >
+          </button>
+          
+          <button 
+            onClick={() => handleSocialLogin('linkedin', setisLogin)}
+            className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all"
+          >
             <FaLinkedin className='text-[#0077b5]' />
             <span>LinkedIn</span>
-            </button>
+          </button>
         </div>
 
+        {/* Sign in Link */}
         <p className="text-center text-sm text-slate-500">
           Already have an account?{' '}
           <button 
             onClick={() => setisLogin(true)} 
-            className="text-[#0B877D] font-medium hover:text-[#097267]"
+            className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors"
           >
             Sign in
           </button>

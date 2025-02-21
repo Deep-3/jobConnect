@@ -1,16 +1,13 @@
 // index.js
 const Sequelize = require('sequelize');
 const sequelize = require('../config/db');
-const jobApplication = require('./jobApplication');
-
 const User = require('./user')(sequelize, Sequelize.DataTypes);
 const JobSeekerProfile = require('./jobseekerprofile')(sequelize, Sequelize.DataTypes);
 const EmployerProfile = require('./employerprofile')(sequelize, Sequelize.DataTypes);
 const Company = require('./company')(sequelize, Sequelize.DataTypes);
 const Job = require('./job')(sequelize, Sequelize.DataTypes);
 const JobApplication = require('./jobApplication')(sequelize, Sequelize.DataTypes);
-
-
+const Notification=require('./notification')(sequelize,Sequelize.DataTypes);
 
 
 const db = {
@@ -20,6 +17,7 @@ const db = {
   Company,
   JobApplication,
   Job,
+  Notification,
   sequelize,
   Sequelize,
 };

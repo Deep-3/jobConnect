@@ -9,9 +9,8 @@ import Login from './components/Login';
 import SignUp from './components/SignUp';
 import OTP from './components/Otp';
 import SelectRole from './components/SelectRole';
-import Navbar from './components/Navbar';
+import Layout from './components/Layout';
 import './App.css';
-
 function App() {
   const [isLogin, setisLogin] = useState(false);
   const [User, setUser] = useState(null);
@@ -44,17 +43,15 @@ function App() {
     checkAuth();
   }, [isLogin]);
 
-  if (IsLoading) {  
+
+  if (IsLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white mt-[-50px]">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="bg-white px-8 py-5 rounded-xl shadow-lg text-center space-y-4">
-          {/* Spinner */}
           <div className="relative w-10 h-10 mx-auto">
             <div className="absolute inset-0 rounded-full border-[3px] border-[#e6f7f5]"></div>
             <div className="absolute inset-0 rounded-full border-[3px] border-[#0B877D] border-t-transparent animate-[spin_0.6s_linear_infinite]"></div>
           </div>
-  
-          {/* Text */}
           <div>
             <h2 className="text-[#0B877D] font-medium">Loading...</h2>
           </div>
@@ -64,43 +61,34 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Sticky Navbar */}
-      <div className="sticky top-0 z-50 bg-white shadow-md">
-        <Navbar 
-          isLogin={isLogin} 
-          setisLogin={setisLogin} 
-          User={User} 
-          setUser={setUser}
-        />
-      </div>
 
-      {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-auto">
-        <Routes>
-          <Route path="/" element={<MainHeader />}>
-            <Route index element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login setisLogin={setisLogin} />} />
-            <Route path="/register" element={<SignUp setisLogin={setisLogin} />} />
-            <Route path="/otp" element={<OTP />} />
-            <Route path="/selectrole" element={<SelectRole setisLogin={setisLogin} />} />
-            <Route 
-              path="*" 
-              element={
-                <div className="flex items-center justify-center h-[calc(100vh-64px)]">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">Page not found</h2>
-                    <p className="text-gray-600 mt-2">The page you're looking for doesn't exist.</p>
-                  </div>
-                </div>
-              }
-            />
-          </Route>
-        </Routes>
-      </div>
-    </div>
+    
+    <Routes>
+      <Route path="/" element={
+        <Layout isLogin={isLogin} setisLogin={setisLogin} User={User}>
+          <MainHeader />  
+        </Layout>
+      }>
+        <Route index element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/login" element={<Login setisLogin={setisLogin} />} />
+        <Route path="/register" element={<SignUp setisLogin={setisLogin} />} />
+        <Route path="/otp" element={<OTP />} />
+        <Route path="/selectrole" element={<SelectRole setisLogin={setisLogin} />} />
+        <Route 
+          path="*" 
+          element={
+            <div className="flex items-center justify-center h-[calc(100vh-64px)]">
+              <div className="text-center">
+                <h2 className="text-2xl font-bold text-gray-800">Page not found</h2>
+                <p className="text-gray-600 mt-2">The page you're looking for doesn't exist.</p>
+              </div>
+            </div>
+          }
+        />
+      </Route>
+    </Routes>
   );
 }
 
