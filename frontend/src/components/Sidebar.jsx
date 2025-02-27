@@ -10,20 +10,37 @@ import {
   FaCog,
   FaSignOutAlt,
   FaBuilding,
-  FaUsers
+  FaUsers,
+  FaSearch
 } from "react-icons/fa";
+import { MdDashboard } from "react-icons/md";
+import { useSelector } from "react-redux";
+
 
 const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
-  const menuItems = [
-    { path: "/", icon: FaHome, label: "Dashboard" },
+
+  const {job}=useSelector((state)=>state);
+
+  const jobseekerMenu=[
+    { path: "/", icon: FaHome, label: "Home" },
+    { path: "/dashboard", icon: MdDashboard, label: "Dashboard" },
     { path: "/profile", icon: FaUserAlt, label: "Profile" },
     { path: "/my-jobs", icon: FaBriefcase, label: "My Jobs" },
-    { path: "/saved-jobs", icon: FaBookmark, label: "Saved Jobs" },
-    { path: "/companies", icon: FaBuilding, label: "Companies" },
+    { path: "/savejob", icon: FaBookmark, label: "Saved Jobs" },
+    { path: "/findjob", icon: FaSearch, label: "Find Job" },
     { path: "/messages", icon: FaEnvelope, label: "Messages" },
     { path: "/community", icon: FaUsers, label: "Community" },
     { path: "/settings", icon: FaCog, label: "Settings" },
   ];
+  const employeeMenu= [
+    { path: "/", icon: FaHome, label: "Home" },
+    { path: "/dashboard", icon: MdDashboard, label: "Dashboard" },
+    { path: "/profile", icon: FaUserAlt, label: "Profile" },
+    { path: "/companies", icon: FaBuilding, label: "Companies" },
+    { path: "/messages", icon: FaEnvelope, label: "Messages" },
+    { path: "/settings", icon: FaCog, label: "Settings" },
+  ];
+  const menuItems =User?.role==='jobseeker'?jobseekerMenu:employeeMenu;
 
   const publicMenuItems = [
     { path: "/", icon: FaHome, label: "Home" },
@@ -65,7 +82,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
         <FaUserAlt className="w-5 h-5 text-white" />
       </div>
       <div className="overflow-hidden">
-        <h3 className="font-medium text-gray-800 truncate">{User?.name}</h3>
+        <h3 className="font-medium text-gray-800 truncate">{User?.name.split(" ").slice(0,2).join(" ").toLowerCase()}</h3>
         <p className="text-sm text-gray-500 truncate">{User?.email}</p>
       </div>
     </>
@@ -116,7 +133,12 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
             onClick={() => window.innerWidth<1024 && setIsOpen(false)}
           >
             <item.icon className="w-5 h-5" />
-            <span>{item.label}</span>
+            {item.label==="Saved Jobs"?(<div className="flex gap-12 relative">
+              <span>{item.label}</span>
+            {job.length>0?(<span className="w-4 h-4 absolute top-1 -right-17 bg-red-500 text-white text-xs rounded-full text-center">{job.length}</span>):""}
+              </div>
+          ):( <span>{item.label}</span>)}
+           
           </NavLink>
         ))}
       </nav>

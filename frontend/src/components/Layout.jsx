@@ -2,9 +2,10 @@ import { useState,useEffect } from 'react';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
+import { Outlet } from 'react-router-dom';
 import {io} from "socket.io-client"
 
-const Layout = ({ children, isLogin, setisLogin, User }) => {
+const Layout = ({isLogin, setisLogin, User }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [socket, setSocket] = useState(null);
   const [notifications, setNotifications] = useState([]);
@@ -133,7 +134,7 @@ const Layout = ({ children, isLogin, setisLogin, User }) => {
             transition-all duration-300
             ${isLogin ? (isSidebarOpen ? 'ml-[240px] max-lg:ml-0 ' : 'ml-0') : ''}
           `}>
-            {children}
+            <Outlet/>
           </main>
         </div>
       </div>

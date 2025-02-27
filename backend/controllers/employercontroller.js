@@ -27,7 +27,7 @@ exports.getCompanyProfile = async (req, res) => {
 
 exports.updateCompanyProfile = async (req, res) => {
     try {
-        const result = await employerService.updateCompanyProfile(req.user.id, req.body);
+        const result = await employerService.updateCompanyProfile(req.user.id, req.body,req.files);
         if (result.error) {
             return res.status(400).json({ error: result.error });
         }

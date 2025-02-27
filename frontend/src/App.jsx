@@ -10,6 +10,9 @@ import SignUp from './components/SignUp';
 import OTP from './components/Otp';
 import SelectRole from './components/SelectRole';
 import Layout from './components/Layout';
+import Community from './components/Community';
+import FindJob from './components/FindJob';
+import SaveJob from './components/SaveJob';
 import './App.css';
 function App() {
   const [isLogin, setisLogin] = useState(false);
@@ -65,17 +68,19 @@ function App() {
     
     <Routes>
       <Route path="/" element={
-        <Layout isLogin={isLogin} setisLogin={setisLogin} User={User}>
-          <MainHeader />  
+        <Layout isLogin={isLogin} setisLogin={setisLogin} User={User}> 
         </Layout>
       }>
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/community" element={<Community  User={User}/>} />
         <Route path="/login" element={<Login setisLogin={setisLogin} />} />
         <Route path="/register" element={<SignUp setisLogin={setisLogin} />} />
         <Route path="/otp" element={<OTP />} />
         <Route path="/selectrole" element={<SelectRole setisLogin={setisLogin} />} />
+        <Route path="/findjob" element={<FindJob/>} />
+        <Route path="/savejob" element={<SaveJob/>} />
         <Route 
           path="*" 
           element={

@@ -175,10 +175,10 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
             </div>
 
             {/* Icons */}
-            {isLogin && (
+            {isLogin && User?.role==='jobseeker' && (
               <div className="hidden md:flex items-center space-x-3">
                 <button className="text-gray-600 hover:text-gray-900">
-                  <FaComments className="w-5 h-5" />
+                  <NavLink to="/community"> <FaComments className="w-5 h-5" /></NavLink>
                 </button>
                 <div className="relative" ref={notificationRef}>
                   <button 

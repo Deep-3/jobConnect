@@ -1,3 +1,4 @@
+const { ObjectAttributes } = require('@aws-sdk/client-s3');
 const db = require('../models');
 const { User, EmployerProfile, Company, Job } = db;
 const {s3,PutObjectCommand,getSignedUrl,GetObjectCommand,DeleteObjectCommand}=require('../utils/presign')
@@ -30,18 +31,18 @@ exports.createCompanyProfile = async (profileData, userId, companyLogo) => {
 
     if (companyLogo) {
       // Delete previous logo if exists
-      if (existingCompany && existingCompany.companyLogo) {
-        try {
-          await s3.send(new DeleteObjectCommand({
-            Bucket: process.env.AWS_S3_BUCKET,
-            Key: existingCompany.companyLogo
-          }));
-          console.log('Previous logo deleted successfully');
-        } catch (deleteError) {
-          console.error('Error deleting previous logo:', deleteError);
-          // Continue with upload even if delete fails
-        }
-      }
+      // if (existingCompany && existingCompany.companyLogo) {
+      //   try {
+      //     await s3.send(new DeleteObjectCommand({
+      //       Bucket: process.env.AWS_S3_BUCKET,
+      //       Key: existingCompany.companyLogo
+      //     }));
+      //     console.log('Previous logo deleted successfully');
+      //   } catch (deleteError) {
+      //     console.error('Error deleting previous logo:', deleteError);
+      //     // Continue with upload even if delete fails
+      //   }
+      // }
 
       // Upload new logo
       const companyLogoKey = `company-logos/${userId}-${Date.now()}-${companyLogo.logo.name}`;
@@ -118,7 +119,7 @@ exports.getCompanyProfile = async (userId) => {
   }
 };
 
-exports.updateCompanyProfile = async (userId, updateData) => {
+exports.updateCompanyProfile = async (userId, updateData,companyLogo) => {
   try {
     const company = await Company.findOne({
       where: { employeeId: userId }
@@ -126,6 +127,44 @@ exports.updateCompanyProfile = async (userId, updateData) => {
 
     if (!company) {
       return { error: 'Company profile not found' };
+    }
+
+    if (companyLogo) {
+      // Delete previous logo if exists
+      if (company.companyLogo) {
+        try {
+          const oldLogoKey = company.companyLogo.split('.com/')[1];
+          console.log(oldLogoKey)
+          await s3.send(new DeleteObjectCommand({
+            Bucket: process.env.AWS_S3_BUCKET,
+            Key: oldLogoKey
+          }));
+          console.log('Previous logo deleted successfully');
+        } catch (deleteError) {
+          console.error('Error deleting previous logo:', deleteError);
+          // Continue with upload even if delete fails
+        }
+      }
+
+      // Upload new logo
+      const companyLogoKey = `company-logos/${userId}-${Date.now()}-${companyLogo.logo.name}`;
+      
+      try {
+        const uploadParams = {
+          Bucket: process.env.AWS_S3_BUCKET,
+          Key: companyLogoKey,
+          Body: companyLogo.logo.data,
+          ContentType: companyLogo.logo.mimetype
+        };
+
+        await s3.send(new PutObjectCommand(uploadParams));
+        
+        // Add the new logo URL to updateData
+        updateData.companyLogo = `https://${process.env.AWS_S3_BUCKET}.s3.ap-south-1.amazonaws.com/${companyLogoKey}`;
+      } catch (uploadError) {
+        console.error('Error uploading to S3:', uploadError);
+        return { error: 'Failed to upload company logo' };
+      }
     }
 
     const updatedCompany = await company.update(updateData);
@@ -183,7 +222,12 @@ exports.getCompanyJobs = async (userId) => {
 
     const jobs = await Job.findAll({
       where: { companyId: company.id },
-      order: [['createdAt', 'DESC']]
+      order: [['createdAt', 'DESC']],
+       include:{
+        model:Company,
+        as:'company',
+        attributes:['companyName']
+       }
     });
 
     return {

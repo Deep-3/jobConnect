@@ -8,6 +8,7 @@ const Company = require('./company')(sequelize, Sequelize.DataTypes);
 const Job = require('./job')(sequelize, Sequelize.DataTypes);
 const JobApplication = require('./jobApplication')(sequelize, Sequelize.DataTypes);
 const Notification=require('./notification')(sequelize,Sequelize.DataTypes);
+const Community=require('./community')(sequelize,Sequelize.DataTypes);
 
 
 const db = {
@@ -18,6 +19,7 @@ const db = {
   JobApplication,
   Job,
   Notification,
+  Community,
   sequelize,
   Sequelize,
 };

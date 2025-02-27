@@ -9,6 +9,7 @@ const linkedinroutes=require('./routes/linkedinroutes')
 const employerroutes=require('./routes/employerroutes')
 const jobseekerroutes=require('./routes/jobroutes')
 const notificationroutes=require('./routes/notificationroutes')
+const communityroutes=require('./routes/communityroutes')
 const session = require('express-session');
 const http = require('http');
 const server=http.createServer(app);
@@ -109,7 +110,8 @@ app.use('/gauth',googleroutes)
 app.use('/lauth',linkedinroutes)
 app.use('/employer', employerroutes)
 app.use('/jobseeker',jobseekerroutes)
-app.use('/notifications',notificationroutes);
+app.use('/notifications',notificationroutes)
+app.use('/community',communityroutes)
 const PORT = process.env.PORT || 3000;
 
 
@@ -140,6 +142,20 @@ io.on('connection', (socket) => {
           global.connectedUsers.set(userId, []);
       }
       global.connectedUsers.get(userId).push(socket.id);
+
+      console.log('User connected:', userId);
+      console.log('All connected users:', Array.from(global.connectedUsers.entries()));
+      socket.on('joinCommunity', (userData) => {
+        // Verify if user is job seeker (you might want to add this check)
+        socket.join('community');
+        console.log(`${userData.name} joined community chat`);
+      });
+    
+      // Handle community messages
+      socket.on('sendCommunityMessage', (messageData) => {
+        io.to('community').emit('communityMessage', messageData);
+      });
+    
 
       try {
           const pendingNotifications = await db.Notification.findAll({
