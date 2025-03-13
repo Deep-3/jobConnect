@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { replace, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { toggleLoading } from '../redux/slices/UiSlice';
+import { useDispatch,useSelector } from 'react-redux';
+
 
 const OTP = () => {
+  const {isLoading}=useSelector((state)=>state.auth);
+const dispatch=useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
@@ -10,7 +15,6 @@ const OTP = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(30);
   const [canResend, setCanResend] = useState(false);
-  const [isLoading,setIsLoading]=useState(false);
   const [otpLoading,setotpLoading]=useState(false);
 
   // Redirect if no email is present
@@ -92,7 +96,7 @@ const OTP = () => {
   const handleResendOTP = async () => {
     if (!canResend) return;
 
-    setIsLoading(true);
+     dispatch(toggleLoading());
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/verifyotp`, {
         method: 'POST',
@@ -117,7 +121,7 @@ const OTP = () => {
     }
     finally
     {
-      setIsLoading(false)
+       dispatch(toggleLoading())
     }
   };
 

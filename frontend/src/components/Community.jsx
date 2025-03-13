@@ -4,11 +4,16 @@ import { io } from 'socket.io-client';
 import { IoMdSend } from "react-icons/io";
 import { FaUsers } from 'react-icons/fa';
 import toast from 'react-hot-toast'; // Add this import
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleLoading } from '../redux/slices/UiSlice';
 
-function Community({ User }) {
+
+function Community() {
+  const {User}=useSelector((state)=>state.auth);
+  const {isLoading}=useSelector((state)=>state.auth);
+  const dispatch=useDispatch();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [loading, setLoading] = useState(true); // Add loading state
   const [sendingMessage, setSendingMessage] = useState(false); // Add sending state
   const socketRef = useRef();
   const chatRef = useRef(null);
@@ -29,7 +34,7 @@ function Community({ User }) {
 
   const fetchOldMessages = async () => {
     try {
-      setLoading(true);
+     dispatch(toggleLoading())
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_URL}/community`,
         {
@@ -46,8 +51,8 @@ function Community({ User }) {
       console.error('Error fetching messages:', error);
       toast.error('Failed to load messages');
     } finally {
-      setLoading(false);
-    }
+       dispatch(toggleLoading());
+     }
   };
 
  
@@ -150,10 +155,10 @@ function Community({ User }) {
         ref={chatRef}
         className="bg-white rounded-lg shadow p-4 h-[500px] overflow-y-auto mb-4"
       >
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center items-center h-full">
-            <div className=" animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0B877D]"></div>
-          </div>
+      <div className="loader"></div>
+      </div>
         ) : messages.length > 0 ? (
           messages.map((msg, index) => (
             <div 
@@ -194,16 +199,16 @@ function Community({ User }) {
     onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
     placeholder="Type your message..."
     className="flex-1 px-4 py-2 rounded-lg border focus:outline-none focus:border-[#0B877D]"
-    disabled={loading || sendingMessage}
+    disabled={isLoading || sendingMessage}
     rows={1}
     style={{ minHeight: '42px' }}
   />
         <button
           onClick={sendMessage}
-          disabled={loading || sendingMessage || !newMessage.trim()}
+          disabled={isLoading || sendingMessage || !newMessage.trim()}
           className={`
             px-6 py-2 rounded-lg transition-colors
-            ${loading || sendingMessage || !newMessage.trim()
+            ${isLoading || sendingMessage || !newMessage.trim()
               ? 'bg-gray-300 cursor-not-allowed'
               : 'bg-[#0B877D] hover:bg-[#097267]'
             }

@@ -2,8 +2,15 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaSearch, FaComments, FaBell, FaUserCircle, FaBars } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useState, useRef, useEffect } from "react";
+import {setLogin,logout} from "../redux/slices/AuthSlice"
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSidebar } from "../redux/slices/UiSlice";
 
-function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, notifications, setNotifications, markAllAsRead }) {
+function Navbar({   notifications, setNotifications, markAllAsRead }) {
+
+  const {isLogin,User}=useSelector((state)=>state.auth)
+  const {isSidebarOpen}=useSelector((state)=>state.ui)
+  const dispath=useDispatch();
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
   const notificationRef = useRef(null);
@@ -38,7 +45,9 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
       toast.dismiss(loadingToast);
 
       if (response.ok) {
-        setisLogin(false);
+        dispath(logout());
+        if(isSidebarOpen)
+        dispath(toggleSidebar())
         toast.success('Logged out successfully', {
           id: loadingToast
         });
@@ -50,7 +59,7 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
         });
 
         if (response.status === 401) {
-          setisLogin(false);
+          dispath(setLogin(false));
           navigate('/login', { replace: true });
         }
       }
@@ -105,7 +114,7 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
           {/* Left Section */}
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              onClick={() => dispath(toggleSidebar())}
               className={`text-gray-600 hover:text-gray-900 focus:outline-none ${!isLogin ? 'lg:hidden' : ''}`}
             >
               <FaBars className="w-6 h-6" />
@@ -138,7 +147,7 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
                 >
                   Companies
                 </NavLink>
-                <NavLink
+                {isLogin &&(<NavLink
                   to="/community"
                   className={({ isActive }) =>
                     `text-gray-600 hover:text-gray-900 font-medium ${
@@ -148,6 +157,7 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
                 >
                   Community
                 </NavLink>
+                )}
                 <NavLink
                   to="/contact"
                   className={({ isActive }) =>
@@ -175,11 +185,11 @@ function Navbar({ isLogin, setisLogin, User, isSidebarOpen, setIsSidebarOpen, no
             </div>
 
             {/* Icons */}
-            {isLogin && User?.role==='jobseeker' && (
+            {isLogin  && (
               <div className="hidden md:flex items-center space-x-3">
-                <button className="text-gray-600 hover:text-gray-900">
+                {User?.role==='jobseeker'&&(<button className="text-gray-600 hover:text-gray-900">
                   <NavLink to="/community"> <FaComments className="w-5 h-5" /></NavLink>
-                </button>
+                </button>)}
                 <div className="relative" ref={notificationRef}>
                   <button 
                     className="text-gray-600 hover:text-gray-900 relative"

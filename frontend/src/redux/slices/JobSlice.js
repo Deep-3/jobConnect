@@ -1,5 +1,4 @@
 import {createSlice} from "@reduxjs/toolkit"
-
 function localJobStorage()
 {
    try {
@@ -7,9 +6,10 @@ function localJobStorage()
       return savedJob ? JSON.parse(savedJob) : [];
     } catch (error) {
       console.error('Error loading cart:', error);
-       return [];  
+       return []; 
 }
 }
+
 const JobSlice=createSlice({
     name:"job",
     initialState:localJobStorage(),

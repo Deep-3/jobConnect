@@ -8,18 +8,22 @@ import {
   FaBookmark,
   FaEnvelope,
   FaCog,
+  FaSubscript,
   FaSignOutAlt,
   FaBuilding,
   FaUsers,
   FaSearch
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleSidebar } from "../redux/slices/UiSlice";
 
 
-const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
+const Sidebar = () => {
 
-  const {job}=useSelector((state)=>state);
+  const job=useSelector((state)=>state.job);
+  const dispatch=useDispatch();
+  const {isLogin,User}=useSelector((state)=>state.auth)
 
   const jobseekerMenu=[
     { path: "/", icon: FaHome, label: "Home" },
@@ -28,7 +32,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
     { path: "/my-jobs", icon: FaBriefcase, label: "My Jobs" },
     { path: "/savejob", icon: FaBookmark, label: "Saved Jobs" },
     { path: "/findjob", icon: FaSearch, label: "Find Job" },
-    { path: "/messages", icon: FaEnvelope, label: "Messages" },
+    { path: "/subcription", icon: FaSubscript, label: "Subcription Plan" },
     { path: "/community", icon: FaUsers, label: "Community" },
     { path: "/settings", icon: FaCog, label: "Settings" },
   ];
@@ -45,7 +49,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
   const publicMenuItems = [
     { path: "/", icon: FaHome, label: "Home" },
     { path: "/companies", icon: FaBuilding, label: "Contact Us" },
-    { path: "/community", icon: FaUsers, label: "Community" },
+    // { path: "/community", icon: FaUsers, label: "Community" },
     { path: "/contact", icon: FaEnvelope, label: "Contact Us" },
 
   ];
@@ -68,7 +72,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
         <div className="p-4 border-b">
           <div className="flex items-center justify-between">
           <button 
-      onClick={() => setIsOpen(false)}
+      onClick={() => dispatch(toggleSidebar())}
       className="border-[0.5px] absolute top-1.5 right-1 text-red-500 hover:text-red-600"
     >
       <FaTimes className="w-5 h-5" />
@@ -78,8 +82,10 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
   {isLogin ? (
     // Show user profile when logged in
     <>
-      <div className="w-10 h-10 rounded-full bg-[#0B877D] flex items-center justify-center">
-        <FaUserAlt className="w-5 h-5 text-white" />
+      <div className="w-10 h-10 rounded-full">
+        {/* <FaUserAlt className="w-5 h-5 text-white" />
+         */}
+         <img className="w-10 h-10 rounded-full flex items-center justify-center" src={`https://api.dicebear.com/5.x/initials/svg?seed=${User?.name.split(" ")[0]} ${User?.name.split(" ")[User.name.split(" ").length-1]}&backgroundColor=0B877D`} alt="logo" /> 
       </div>
       <div className="overflow-hidden">
         <h3 className="font-medium text-gray-800 truncate">{User?.name.split(" ").slice(0,2).join(" ").toLowerCase()}</h3>
@@ -96,7 +102,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
           ? 'px-4 py-2 text-sm font-medium text-white bg-[#0B877D] border border-[#0B877D] rounded-md hover:bg-[#0a7c73]' 
           : 'px-4 py-2 text-sm font-medium text-gray-600 border border-[#0B877D]  rounded-md hover:bg-[#0a7c73]'}
       `}  
-        onClick={()=>setIsOpen(false)}
+        onClick={()=>dispatch(toggleSidebar())}
       >
         Login
       </NavLink>
@@ -107,7 +113,7 @@ const Sidebar = ({ isOpen, setIsOpen, User,isLogin }) => {
           ? 'px-4 py-2 text-sm font-medium text-white bg-[#0B877D] border border-[#0B877D] rounded-md hover:bg-[#0a7c73]' 
           : 'px-4 py-2 text-sm font-medium text-gray-600 border border-[#0B877D]  rounded-md hover:bg-[#0a7c73]'}
       `}   
-      onClick={()=>setIsOpen(false)}
+      onClick={()=>dispatch(toggleSidebar())}
          >
         Register
       </NavLink>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Job Seeker Subscription Activated</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f6fa;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background-color: #3498db;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .logo {
+            margin-bottom: 15px;
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .subscription-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .feature-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #7f8c8d;
+            background-color: #f8f9fa;
+        }
+        .social-links {
+            margin: 15px 0;
+        }
+        .social-links a {
+            margin: 0 10px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">
+                <!-- Replace with your logo -->
+            </div>
+            <h1>Welcome to Premium Job Seeker!</h1>
+        </div>
+        
+        <div class="content">
+            <p>Dear {{userName}},</p>
+            
+            <p>Congratulations! 🎉 Your premium job seeker subscription has been successfully activated. Get ready to unlock your career potential with our enhanced features!</p>
+            
+            <div class="subscription-details">
+                <h3>Your Subscription Details:</h3>
+                <p><strong>Plan Type:</strong> {{subscriptionPlan}}</p>
+                <p><strong>Status:</strong> {{subscriptionStatus}}</p>
+                <p><strong>Activated On:</strong> {{activationDate}}</p>
+            </div>
+            
+            <h3>Your Premium Benefits Include:</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <h4>Priority Job Applications</h4>
+                    <p>Your profile gets shown first to employers</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Advanced Job Alerts</h4>
+                    <p>Get instant notifications for matching jobs</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Profile Highlights</h4>
+                    <p>Stand out with a highlighted profile</p>
+                </div>
+                <div class="feature-item">
+                    <h4>Direct Recruiter Contact</h4>
+                    <p>Connect directly with hiring managers</p>
+                </div>
+            </div>
+
+            <center>
+                <a href="{{dashboardUrl}}" class="button">Access Your Premium Dashboard</a>
+            </center>
+
+            <p>To make the most of your premium subscription:</p>
+            <ul>
+                <li>Update your profile with latest skills and experiences</li>
+                <li>Set up job alerts for your preferred positions</li>
+                <li>Upload your latest resume</li>
+                <li>Start applying to premium job listings</li>
+            </ul>
+
+            <p>Need help? Our premium support team is available 24/7 to assist you.</p>
+            
+            <p>Best wishes for your job search!</p>
+            <p>The JobConnect Team</p>
+        </div>
+        
+        <div class="footer">
+            <div class="social-links">
+                <a href="{{linkedinUrl}}">LinkedIn</a> |
+                <a href="{{twitterUrl}}">Twitter</a> |
+                <a href="{{facebookUrl}}">Facebook</a>
+            </div>
+            <p>You received this email because you subscribed to JobConnect</p>
+            <p>Email sent to: {{userEmail}}</p>
+            <p>© {{currentYear}} JobConnect. All rights reserved.</p>
+            <p>Ahemdabad</p>
+        </div>
+    </div>
+</body>
+</html>

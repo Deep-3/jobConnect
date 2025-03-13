@@ -15,7 +15,7 @@ exports.CSV = (res, data, filename) => {
   res.send(csv);
 };
 exports.jobAplicationMail= async(data,templateName) => {
-    console.log(__dirname);
+    // console.log(__dirname);
     const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
     console.log(templatePath);
     const templateHtml = fs.readFileSync(templatePath, 'utf-8');
@@ -45,3 +45,19 @@ exports.jobAplicationMail= async(data,templateName) => {
 //     });
 
 };
+
+exports.subscriptionMail= async(data,templateName) => {
+  // console.log(__dirname);
+  const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
+  console.log(templatePath);
+  const templateHtml = fs.readFileSync(templatePath, 'utf-8');
+  const compiledTemplate = hbs.compile(templateHtml);
+   const html=compiledTemplate({
+    ...data,
+    activationDate: new Date().toLocaleDateString(),
+    dashboardUrl: 'https://yourwebsite.com/dashboard',
+    currentYear: new Date().getFullYear()
+  })
+
+  return html;
+}

@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     jobType: {
-      type: DataTypes.ENUM('full-time', 'part-time', 'contract', 'internship'),
+      type: DataTypes.ENUM('full-time', 'part time', 'contract', 'remote','internship'),
       allowNull: false
     },
     experienceLevel: {

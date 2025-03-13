@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { FaBriefcase, FaBuilding } from 'react-icons/fa';
+import { setLogin } from '../redux/slices/AuthSlice';
+import { useDispatch } from 'react-redux';
 
-const SelectRole = ({setisLogin}) => {
+const SelectRole = () => {
+  const dispatch=useDispatch()
   const navigate = useNavigate();
   const location = useLocation();
   const email = location.state?.email;
@@ -26,7 +29,7 @@ const SelectRole = ({setisLogin}) => {
         body: JSON.stringify({ role })
       });
       if (response.ok) {
-        setisLogin(true);
+        dispatch(setLogin(true));
         toast.success(`Registered successfully as ${role}`);
         navigate(role === 'jobseeker' ? '/jobseeker/dashboard' : '/employee/dashboard',{replace:true});
       } else {

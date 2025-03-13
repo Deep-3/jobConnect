@@ -1,14 +1,17 @@
 // src/components/GoogleHandler.js
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { setLogin } from '../redux/slices/AuthSlice';
 
 const googleHandler = () => {
+  const dispatch=useDispatch();
   const navigate = useNavigate();
   let isProcessing = false;
   let authWindow = null;  // Track the auth window
 
 
-  const handleSocialLogin = async (platform,setisLogin) => {
+  const handleSocialLogin = async (platform) => {
 
     if (authWindow && !authWindow.closed) {
         authWindow.focus();  // Focus the existing window
@@ -55,6 +58,7 @@ const googleHandler = () => {
               navigate('/selectrole');
             } else {
               toast.success('Login successful');
+              dispatch(setLogin(true));
               navigate('/');
             }
           } else {
@@ -62,8 +66,7 @@ const googleHandler = () => {
           }
           authWindow.close();
           authWindow = null;  // Reset the window reference
-          setisLogin(true);
-
+          
         }
       };
     

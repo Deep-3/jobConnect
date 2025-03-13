@@ -115,7 +115,7 @@ exports.applyForJob = async (userId, jobId) => {
 
       // Send email notification
       const html = await jobAplicationMail(completeApplication, 'jobapplication.hbs');
-      const emailResult=await sendMail(jobSeekerProfile.user.email,html)
+      const emailResult=await sendMail(jobSeekerProfile.user.email,"New Job Application",html);
       if (!emailResult.success) {
         console.error('Email sending failed:', emailResult.error);
     }

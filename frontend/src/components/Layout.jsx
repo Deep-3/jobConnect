@@ -4,9 +4,15 @@ import Sidebar from './Sidebar';
 import toast from 'react-hot-toast';
 import { Outlet } from 'react-router-dom';
 import {io} from "socket.io-client"
+import { useDispatch, useSelector } from 'react-redux';
+import {toggleSidebar} from "../redux/slices/UiSlice"
 
-const Layout = ({isLogin, setisLogin, User }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const Layout = () => {
+ 
+  const {isSidebarOpen}=useSelector((state)=>state.ui)
+  const dispatch=useDispatch()
+  const {isLogin,User}=useSelector((state)=>state.auth)
+
   const [socket, setSocket] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
@@ -26,20 +32,16 @@ const Layout = ({isLogin, setisLogin, User }) => {
     }
   };
 
+  
   useEffect(() => {
-    // Fetch notifications when component mounts and User is available
-    if (isLogin) {
-      fetchNotifications();
-    }
-  }, [isLogin, User]);
-
-  useEffect(() => {
-    if (isLogin && User && !socket) {
-      const newSocket = io(import.meta.env.VITE_BACKEND_URL);
+    fetchNotifications();
+   
+    if (isLogin && User?.role=='employee' && !socket) {
+       const newSocket = io(import.meta.env.VITE_BACKEND_URL);
       setSocket(newSocket);
-
+      // console.log(socket);
       newSocket.emit('userConnected', User.id);
-
+      // console.log(newSocket.id)
       if (User.role === 'employee') {
         newSocket.on('newApplication', (notification) => {
           setNotifications(prev => {
@@ -54,15 +56,14 @@ const Layout = ({isLogin, setisLogin, User }) => {
 
         });
       }
-
       return () => {
-        if (socket) {
-          newSocket.close();
+        
+          newSocket.disconnect();
           setSocket(null);
-        }
+
       };
     }
-  }, [isLogin, User]);
+  }, [User]);
 
   const markAllAsRead = async () => {
     try {
@@ -90,11 +91,7 @@ const Layout = ({isLogin, setisLogin, User }) => {
     <div className="h-screen overflow-hidden bg-white">
       <div className="fixed top-0 left-0 right-0 z-50">
         <Navbar 
-          isLogin={isLogin} 
-          setisLogin={setisLogin} 
-          User={User}
-          isSidebarOpen={isSidebarOpen}
-          setIsSidebarOpen={setIsSidebarOpen}   
+            
           notifications={notifications}
           setNotifications={setNotifications}
           markAllAsRead={markAllAsRead}
@@ -107,7 +104,7 @@ const Layout = ({isLogin, setisLogin, User }) => {
           {isSidebarOpen && (
             <div 
               className="lg:hidden fixed inset-0  z-40"
-              onClick={() => setIsSidebarOpen(false)}
+              onClick={() =>dispatch(toggleSidebar()) }
             />
           )}
 
@@ -120,10 +117,6 @@ const Layout = ({isLogin, setisLogin, User }) => {
               ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>
               <Sidebar 
-                isOpen={isSidebarOpen} 
-                setIsOpen={setIsSidebarOpen} 
-                User={User}
-                isLogin={isLogin}
               />
             </div>
         

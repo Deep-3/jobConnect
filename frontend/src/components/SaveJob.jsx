@@ -4,7 +4,7 @@ import JobItem from './Jobitem'
 import { NavLink } from 'react-router-dom'
 
 const SaveJob = () => {
-    const {job} = useSelector((state) => state);
+    const job = useSelector((state) => state.job);
 
     return (
         <div className="max-w-[1200px] p-6 mx-auto">
@@ -33,7 +33,6 @@ const SaveJob = () => {
                     <NavLink to="/findjob">
                         <button className="px-8 py-3 bg-[#0B877D] text-white rounded-md hover:bg-[#0a7a71] transition-colors font-medium flex items-center gap-2">
                             Find Jobs
-                           
                         </button>
                     </NavLink>
                 </div>

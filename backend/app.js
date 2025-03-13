@@ -10,6 +10,9 @@ const employerroutes=require('./routes/employerroutes')
 const jobseekerroutes=require('./routes/jobroutes')
 const notificationroutes=require('./routes/notificationroutes')
 const communityroutes=require('./routes/communityroutes')
+const paymentroutes=require('./routes/paymentroutes')
+const chatroutes=require('./routes/chatbotroutes')
+
 const session = require('express-session');
 const http = require('http');
 const server=http.createServer(app);
@@ -112,6 +115,9 @@ app.use('/employer', employerroutes)
 app.use('/jobseeker',jobseekerroutes)
 app.use('/notifications',notificationroutes)
 app.use('/community',communityroutes)
+app.use('/payment',paymentroutes)
+app.use('/chatbot',chatroutes)
+
 const PORT = process.env.PORT || 3000;
 
 

@@ -50,7 +50,7 @@ const JobCard = ({job}) => {
               href={job.company.companyWebsite} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-[#0B877D] text-sm hover:underline"
+              className="text-[#0B877D] text-xs hover:underline"
             >
               {job.company.companyWebsite}
             </a>

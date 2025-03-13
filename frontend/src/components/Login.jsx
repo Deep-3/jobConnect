@@ -1,16 +1,23 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import {FaEnvelope, FaLock,FaLinkedin} from 'react-icons/fa';
 import { FcGoogle} from 'react-icons/fc';
 import {useNavigate} from "react-router-dom"
 import { AiOutlineEye,AiOutlineEyeInvisible} from 'react-icons/ai';
 import {toast} from 'react-hot-toast';
 import googleHandler from './GoogleHandler';
+import { setLogin } from '../redux/slices/AuthSlice';
+import { useDispatch,useSelector } from 'react-redux';
+import { toggleLoading } from '../redux/slices/UiSlice';
 
 
-const Login = ({isLogin,setisLogin,setUser}) => {
+
+const Login = () => {
+  
+  const {isLoading}=useSelector((state)=>state.ui)
+  const dispatch=useDispatch();
 const Navigate=useNavigate();
 const handleSocialLogin=googleHandler();
-  const [isLoading, setIsLoading] = useState(false);
   
 
 
@@ -31,8 +38,7 @@ const handleSocialLogin=googleHandler();
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    setIsLoading(true); // Start loading
-
+   dispatch(toggleLoading())
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
         method: 'POST',
@@ -45,7 +51,7 @@ const handleSocialLogin=googleHandler();
       
       if (response.ok) {
         await new Promise(resolve => setTimeout(resolve, 2000)); 
-        setisLogin(true);
+        dispatch(setLogin(true));
         Navigate('/');
         toast.success("Login Successfully")
 
@@ -57,8 +63,7 @@ const handleSocialLogin=googleHandler();
       console.error('Login error:', error);
     }
     finally {
-    
-      setIsLoading(false); // Stop loading
+     dispatch(toggleLoading())   
     }
   };
   
@@ -146,7 +151,7 @@ const handleSocialLogin=googleHandler();
           {/* Social Buttons */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
             <button 
-              onClick={() => handleSocialLogin('google', setisLogin)}
+              onClick={() => handleSocialLogin('google')}
               className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-red-600 hover:text-red-600 transition-all"
             >
               <FcGoogle />
@@ -154,7 +159,7 @@ const handleSocialLogin=googleHandler();
             </button>
             
             <button 
-              onClick={() => handleSocialLogin('linkedin', setisLogin)}
+              onClick={() => handleSocialLogin('linkedin')}
               className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all"
             >
               <FaLinkedin className='text-[#0077b5]' />
@@ -165,9 +170,11 @@ const handleSocialLogin=googleHandler();
           {/* Sign up Link */}
           <p className="text-center text-sm text-slate-500">
             Don't have an account? {" "}
+            <NavLink to="/register">
             <a href="/register" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
               Sign up
             </a>
+            </NavLink>
           </p>
         </div>
       </div>

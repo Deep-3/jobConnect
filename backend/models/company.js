@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
       companyName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: {
+          name: 'users_companyname_unique',  // fixed નામ આપ્યું જેથી duplicate indexes ન બને
+          msg: 'CompanyName already in use!'
+        },
       },
       companyDescription: {
         type: DataTypes.TEXT,
@@ -107,7 +110,10 @@ module.exports = (sequelize, DataTypes) => {
       companyCode: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: {
+          name: 'companycode_unique',  
+          msg: 'companycode already in use!'
+        },
         defaultValue: () => Math.random().toString(36).substring(2, 10).toUpperCase()
       }
     }, {

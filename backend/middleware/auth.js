@@ -40,7 +40,9 @@ next()
 
 exports.isAuthenticated = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: 'Unauthorized. Please log in.' });
+        return res.status(401).json({ 
+            success:false,
+            error: 'Unauthorized. Please log in.' });
     }
     next();
 };
@@ -48,6 +50,7 @@ exports.isAuthenticated = (req, res, next) => {
 exports.isEmployer = (req, res, next) => {
     if (req.user.role !== 'employee' && req.user.role !== 'hr') {
         return res.status(403).json({ 
+            success:false,
             error: 'Access denied. Only employees can access this resource.' 
         });
     }

@@ -28,6 +28,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      subscriptionPlan: {
+        type: DataTypes.ENUM('free', 'basic', 'premium', 'enterprise'),
+        allowNull: false,
+        defaultValue: 'free',
+      },
+      subscriptionStatus: {
+        type: DataTypes.ENUM('active', 'expired', 'cancelled'),
+        allowNull: false,
+        defaultValue: 'active',
+      },
     });
   };
   

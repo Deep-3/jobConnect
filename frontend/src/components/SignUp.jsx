@@ -3,14 +3,17 @@ import { FaEnvelope, FaLock, FaLinkedin, FaUser } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import googleHandler from './GoogleHandler';
+import { toggleLoading } from '../redux/slices/UiSlice';
+import { useDispatch,useSelector } from 'react-redux';
 
-const SignUp = ({setisLogin}) => {
+
+const SignUp = () => {
   const handleSocialLogin = googleHandler();  // Custom hook use કરો
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-
+  const {isLoading}=useSelector((state)=>state.ui);
+const dispatch=useDispatch()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -39,8 +42,7 @@ const SignUp = ({setisLogin}) => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-
+    dispatch(toggleLoading());
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users`, {
         method: 'POST',
@@ -61,7 +63,7 @@ const SignUp = ({setisLogin}) => {
       console.error('Signup error:', error);
       toast.error("Something went wrong");
     } finally {
-      setIsLoading(false); // Stop loading
+      dispatch(toggleLoading())
     }
   };
 
@@ -156,7 +158,7 @@ const SignUp = ({setisLogin}) => {
         {/* Social Buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
           <button 
-            onClick={() => handleSocialLogin('google', setisLogin)}
+            onClick={() => handleSocialLogin('google')}
             className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-red-600 hover:text-red-600 transition-all"
           >
             <FcGoogle />
@@ -164,7 +166,7 @@ const SignUp = ({setisLogin}) => {
           </button>
           
           <button 
-            onClick={() => handleSocialLogin('linkedin', setisLogin)}
+            onClick={() => handleSocialLogin('linkedin')}
             className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all"
           >
             <FaLinkedin className='text-[#0077b5]' />
@@ -175,12 +177,11 @@ const SignUp = ({setisLogin}) => {
         {/* Sign in Link */}
         <p className="text-center text-sm text-slate-500">
           Already have an account?{' '}
-          <button 
-            onClick={() => setisLogin(true)} 
-            className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors"
-          >
-            Sign in
-          </button>
+          <NavLink to="/login">
+          <a href="/login" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
+              Sign In
+            </a></NavLink>
+         
         </p>
       </div>
     </div>
