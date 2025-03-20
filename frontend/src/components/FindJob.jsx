@@ -1,21 +1,23 @@
-import React, { useEffect,useState } from 'react'
-// import data from '../Data';
+import React, { useEffect, useState } from 'react'
 import JobCard from './JobCard';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleLoading } from '../redux/slices/UiSlice';
-import { FaSearch,FaMapMarkerAlt} from 'react-icons/fa';
-
+import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 
 const FindJob = () => {
+  const [page, setPage] = useState(1);
+  const [totalpage, setTotalpage] = useState(1);
   const [posts, setPosts] = useState([]);
-  const [filteredPosts, setFilteredPosts] = useState([]); 
+  const [allJobs, setAllJobs] = useState([]); // Store all jobs for filtering
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [isFiltering, setIsFiltering] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     jobType: '',
     location: ''
   });
-  
-  const {isSidebarOpen, isLoading} = useSelector((state)=>state.ui);
+
+  const { isSidebarOpen, isLoading } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
   // Job Types for dropdown
@@ -34,25 +36,48 @@ const FindJob = () => {
     { id: 4, name: 'Remote' }
   ];
 
-  // Load initial data
+  // Load all jobs once for filtering
   useEffect(() => {
-    const loadData = async () => {
-      dispatch(toggleLoading());
+    const loadAllJobs = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/alljob`, {
+        // Call API to get all jobs
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/0/alljob`, {
           credentials: 'include'
         });
         const data = await response.json();
-        setPosts(data.data);
-        setFilteredPosts(data.data); // Initialize filtered posts
+        setAllJobs(data.data);
       } catch (error) {
-        console.error("Error loading jobs:", error);
-      } finally {
-        dispatch(toggleLoading());
+        console.error("Error loading all jobs:", error);
       }
     };
-    loadData();
+    
+    loadAllJobs();
   }, []);
+
+  // Load paginated data
+  useEffect(() => {
+    // Only load paginated data if not filtering
+    if (!isFiltering) {
+      const loadData = async () => {
+        dispatch(toggleLoading());
+        try {
+          const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/${page}/alljob`, {
+            credentials: 'include'
+          });
+          const data = await response.json();
+          setPosts(data.data.rows);
+          setTotalpage(data.totalpage);
+          setFilteredPosts(data.data.rows);
+        } catch (error) {
+          console.error("Error loading jobs:", error);
+        } finally {
+          dispatch(toggleLoading());
+        }
+      };
+      
+      loadData();
+    }
+  }, [page, isFiltering]);
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -61,49 +86,66 @@ const FindJob = () => {
       ...prev,
       [name]: value
     }));
+    
+    setIsFiltering(true);
   };
 
-  // Apply filters
+  // Apply filters to all jobs
   useEffect(() => {
-    let result = [...posts];
+    // Check if any filter is active
+    const hasActiveFilters = 
+      filters.search !== '' || 
+      filters.jobType !== '' || 
+      filters.location !== '';
     
-    // Apply search filter
-    console.log('Before location filter:', result);
-    console.log(filters);
+    setIsFiltering(hasActiveFilters);
+    
+    if (hasActiveFilters && allJobs.length > 0) {
+      // Apply filters to all jobs
+      let result = [...allJobs];
+      
+      if (filters.search) {
+        result = result.filter(job => 
+          job.title?.toLowerCase().includes(filters.search.toLowerCase()) ||
+          job.company.companyName?.toLowerCase().includes(filters.search.toLowerCase()) ||
+          job.description?.toLowerCase().includes(filters.search.toLowerCase())
+        );
+      }
+      
+      if (filters.jobType) {
+        result = result.filter(job => 
+          job.jobType?.toLowerCase().includes(filters.jobType.toLowerCase())
+        );
+      }
+      
+      if (filters.location) {
+        result = result.filter(job => 
+          job.location?.toLowerCase().includes(filters.location.toLowerCase())
+        );
+      }
+      
+      setFilteredPosts(result);
+    } 
+  }, [filters, allJobs, posts]);
 
-    if (filters.search) {
-      result = result.filter(job => 
-        job.title?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.company.companyName?.toLowerCase().includes(filters.search.toLowerCase()) ||
-        job.description?.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-    
-    // Apply job type filter
-    if (filters.jobType) {
-      result = result.filter(job => 
-        job.jobType?.toLowerCase().includes(filters.jobType.toLowerCase())
-      );
-    }
-    
-    // Apply location filter with partial match
-    if (filters.location) {
-      result = result.filter(job => 
-        job.location?.toLowerCase().includes(filters.location.toLowerCase())
-      );
-    }
-    console.log('After location filter:', result);
-
-    setFilteredPosts(result);
-  }, [filters, posts]);
+  // Handle clear filters
+  const handleClearFilters = () => {
+    setFilters({
+      search: '',
+      jobType: '',
+      location: ''
+    });
+    setIsFiltering(false);
+    setFilteredPosts(posts); // Reset to current page posts
+  };
 
   if (isLoading) {
     return (
-      <div className=' h-screen w-full flex justify-center items-center'>
-              <div className="loader"></div>
+      <div className='h-screen w-full flex justify-center items-center'>
+        <div className="loader"></div>
       </div>
     );
-  } 
+  }
 
   return (
     <div className={`mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8
@@ -146,18 +188,16 @@ const FindJob = () => {
               ))}
             </select>
           </div>
-
           {/* Location Dropdown */}
           <div className="md:w-48 flex relative">
-          <FaMapMarkerAlt className='absolute w-3 h-4 left-2 top-1/2 -translate-y-1/2 text-[#0B877D]'/>
+            <FaMapMarkerAlt className='absolute w-3 h-4 left-2 top-1/2 -translate-y-1/2 text-[#0B877D]'/>
             <select
               name="location"
               value={filters.location}
               onChange={handleFilterChange}
               className="w-full px-6 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#0B877D]"
             >
-              <option value="" className='flex'> 
-              All Locations</option>
+              <option value="" className='flex'>All Locations</option>
               {locations.map(loc => (
                 <option key={loc.id} value={loc.name}>
                   {loc.name}
@@ -167,13 +207,26 @@ const FindJob = () => {
           </div>
         </div>
 
-        <p className="text-sm sm:text-base text-gray-600">
-          Discover {filteredPosts.length} job opportunities waiting for you
-        </p>
+        <div className="flex justify-between items-center">
+          <p className="text-sm sm:text-base text-gray-600">
+            {isFiltering 
+              ? `Found ${filteredPosts.length} jobs matching your search criteria` 
+              : `Discover ${filteredPosts.length} job opportunities waiting for you`}
+          </p>
+          
+          {isFiltering && (
+            <button 
+              onClick={handleClearFilters}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+            >
+              Clear Filters
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Jobs Grid */}
-      <div className='grid gap-3 sm:gap-4 lg:gap-6grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
+      <div className='grid gap-3 sm:gap-4 lg:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'>
         {filteredPosts.map((job, index) => (
           <div 
             key={job.id}
@@ -188,6 +241,60 @@ const FindJob = () => {
           </div>
         ))}
       </div>
+
+      {/* Pagination - Only show when not filtering */}
+      {filteredPosts.length > 0 && !isFiltering && (
+        <div className="mt-5">
+          <div>
+            {totalpage > 0 && (
+              <div className="flex justify-center gap-4">
+                {/* Previous Button */}
+                <button 
+                  onClick={() => setPage(prev => Math.max(prev - 1, 1))}
+                  disabled={page === 1}
+                  className={`px-4 py-2 rounded-md ${
+                    page === 1 
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed' 
+                      : 'bg-[#0B877D] text-white hover:bg-[#086b63]'
+                  }`}
+                >
+                  Previous
+                </button>
+                
+                {/* Page Numbers */}
+                <div className="flex items-center gap-2">
+                  {[...Array(totalpage).keys()].map(num => (
+                    <button
+                      key={num + 1}
+                      onClick={() => setPage(num + 1)}
+                      className={`w-10 h-10 rounded-full ${
+                        page === num + 1
+                          ? 'bg-[#0B877D] text-white'
+                          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      }`}
+                    >
+                      {num + 1}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Next Button */}
+                <button
+                  onClick={() => setPage(prev => Math.min(prev + 1, totalpage))}
+                  disabled={page === totalpage}
+                  className={`px-4 py-2 rounded-md ${
+                    page === totalpage
+                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                      : 'bg-[#0B877D] text-white hover:bg-[#086b63]'
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* No Jobs Found */}
       {filteredPosts.length === 0 && (
@@ -204,4 +311,5 @@ const FindJob = () => {
     </div>
   );
 };
+
 export default FindJob;

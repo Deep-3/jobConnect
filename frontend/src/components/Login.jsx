@@ -83,6 +83,7 @@ const handleSocialLogin=googleHandler();
                 placeholder="Email address"
                 value={formData.email}
                 onChange={handleChange}
+                autoComplete="current-email"
                 required
                 className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
               />
@@ -98,6 +99,7 @@ const handleSocialLogin=googleHandler();
                 value={formData.password}
                 onChange={handleChange}  
                 required
+                autoComplete="current-password"  
                 className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
               />
               <span 
@@ -170,10 +172,9 @@ const handleSocialLogin=googleHandler();
           {/* Sign up Link */}
           <p className="text-center text-sm text-slate-500">
             Don't have an account? {" "}
-            <NavLink to="/register">
-            <a href="/register" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
-              Sign up
-            </a>
+            
+           <NavLink to="/register" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
+           Sign Up
             </NavLink>
           </p>
         </div>

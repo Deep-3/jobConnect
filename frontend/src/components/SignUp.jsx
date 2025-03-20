@@ -98,6 +98,7 @@ const dispatch=useDispatch()
               placeholder="Email address"
               value={formData.email}
               onChange={handleChange}
+              autoComplete="email"        
               required
               className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
             />
@@ -113,6 +114,7 @@ const dispatch=useDispatch()
                 placeholder={field === 'password' ? "Password" : "Confirm Password"}
                 value={formData[field]}
                 onChange={handleChange}
+                autoComplete="new-password"
                 required
                 className="w-full py-3 px-4 pl-11 border border-slate-200 rounded-lg text-base focus:outline-none focus:border-[#0B877D]"
               />
@@ -177,10 +179,10 @@ const dispatch=useDispatch()
         {/* Sign in Link */}
         <p className="text-center text-sm text-slate-500">
           Already have an account?{' '}
-          <NavLink to="/login">
-          <a href="/login" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
+          <NavLink to="/login" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
+        
               Sign In
-            </a></NavLink>
+            </NavLink>
          
         </p>
       </div>

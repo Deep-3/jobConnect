@@ -64,7 +64,7 @@ const googleHandler = () => {
           } else {
             toast.error(message || 'Login failed');
           }
-          authWindow.close();
+        
           authWindow = null;  // Reset the window reference
           
         }

@@ -14,6 +14,6 @@ router.put('/profile', jobSeekerController.updateProfile);
 // Job Applications
 router.post('/jobs/:jobId/apply', jobSeekerController.submitApplication);
 router.get('/applications', jobSeekerController.getMyApplications);
-router.get('/alljob',jobcontroller.getAllJob);
+router.get('/:page/alljob',jobcontroller.getAllJob);
 
 module.exports = router; 

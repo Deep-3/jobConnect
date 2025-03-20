@@ -5,13 +5,15 @@ import { useState, useRef, useEffect } from "react";
 import {setLogin,logout} from "../redux/slices/AuthSlice"
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/UiSlice";
+import Confirmmodal from "../common/confirmmodal";
+import { store } from '../redux/Store'
 
 function Navbar({   notifications, setNotifications, markAllAsRead }) {
 
   const {isLogin,User}=useSelector((state)=>state.auth)
-  const {isSidebarOpen}=useSelector((state)=>state.ui)
   const dispath=useDispatch();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [confirmmodal,setConfirmmodal]=useState(null);
   const navigate = useNavigate();
   const notificationRef = useRef(null);
 
@@ -46,8 +48,7 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
 
       if (response.ok) {
         dispath(logout());
-        if(isSidebarOpen)
-        dispath(toggleSidebar())
+       
         toast.success('Logged out successfully', {
           id: loadingToast
         });
@@ -279,7 +280,31 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
               ) : (
                 <>
                   <button
-                    onClick={logoutHandler}
+                    onClick={() => {
+
+                      if(store.getState().ui.isSidebarOpen) {
+                        dispath(toggleSidebar());
+                      }
+
+                      setConfirmmodal({
+                      text1: "Are You Sure ?",
+                      text2: "You will be logged out of your Account",
+                      btn1Text: "Logout",
+                      btn1Handler:  () => {
+                        logoutHandler();
+                        setConfirmmodal(null);
+                      },
+                      btn2Text: "Cancel",
+                      btn2Handler: () => {
+                        setConfirmmodal(null)
+                        if(!store.getState().ui.isSidebarOpen)
+                        {
+                          dispath(toggleSidebar());
+                        }
+                      }
+                  })
+                }
+                }
                     className="px-4 py-2 text-[#0B877D] font-medium hover:bg-[#0B877D]/10 rounded-lg"
                   >
                     Logout
@@ -297,7 +322,10 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
           </div>
         </div>
       </div>
+      
+      {confirmmodal && <Confirmmodal modalData={confirmmodal}/>}
     </nav>
+
   );
 }
 
