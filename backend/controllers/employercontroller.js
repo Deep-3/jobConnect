@@ -86,3 +86,26 @@ exports.getPendingCompanies = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getApplication=async(req,res)=>{
+    try {
+        const result = await employerService.getApplication(req.user.id);
+        if (result.error) {
+            return res.status(404).json({ error: result.error });
+        }
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+exports.updateApplication  = async (req, res) => {
+    try {
+        const result = await employerService.updateApplication(req);
+        if (result.error) {
+            return res.status(404).json({ error: result.error });
+        }
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};

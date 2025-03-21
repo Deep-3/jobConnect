@@ -1,0 +1,97 @@
+<!-- views/emails/interview-template.hbs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .company-logo {
+            max-width: 150px;
+            margin-bottom: 15px;
+        }
+        .content {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .interview-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            {{#if companylogo}}
+                <img src="{{companylogo}}" alt="{{companyname}}" class="company-logo">
+            {{/if}}
+            <h2>{{companyname}}</h2>
+        </div>
+
+        <div class="content">
+            <h2>Interview Scheduled</h2>
+            <p>Dear {{name}},</p>
+            
+            <p>Your interview has been scheduled for the position of <strong>{{jobtitle}}</strong>.</p>
+
+            <div class="interview-details">
+                <h3>Interview Details:</h3>
+                <ul>
+                    <li><strong>Date:</strong> {{scheduledDate}}</li>
+                    <li><strong>Time:</strong> {{startTime}} to {{endTime}}</li>
+                </ul>
+
+                <a href="{{meetingUrl}}" class="button" target="_blank">
+                    Join Interview
+                </a>
+            </div>
+
+            <div class="important-notes">
+                <h3>Important Notes:</h3>
+                <ul>
+                    <li>Please join the meeting 5 minutes before the scheduled time</li>
+                    <li>Ensure you have a stable internet connection</li>
+                    <li>Keep your resume and relevant documents ready</li>
+                    <li>Test your audio and video before the interview</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Best regards,</p>
+            <p><strong>{{companyname}} HR Team</strong></p>
+            <p>&copy; {{currentYear}} {{companyname}}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

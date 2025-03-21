@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const employerController = require('../controllers/employercontroller');
+const interviewcontroller=require("../controllers/interviewcontroller")
 const { isAuthenticated, isEmployer, isAdmin } = require('../middleware/auth');
 const { validateCompanyForm } = require('../middleware/companyChecks');
 
@@ -16,5 +17,14 @@ router.get('/jobs', isAuthenticated, isEmployer, employerController.getCompanyJo
 // Admin Routes
 router.get('/companies/pending', isAuthenticated, isAdmin, employerController.getPendingCompanies);
 router.post('/company/verify/:companyId', isAuthenticated, isAdmin, employerController.verifyCompany);
+
+//interviewschedule
+router.post('/jobapplication',isAuthenticated,isEmployer,interviewcontroller.scheduleInterview)
+router.get('/jobapplication/:id',isAuthenticated,isEmployer,interviewcontroller.getInterviewDetails)
+router.get('/jobapplication/token',isAuthenticated,isEmployer,interviewcontroller.getVideoToken)
+
+
+router.get('/getapplication',isAuthenticated,isEmployer,employerController.getApplication)
+router.post('/jobapplication/update-status',isAuthenticated,isEmployer,employerController.updateApplication)
 
 module.exports = router; 

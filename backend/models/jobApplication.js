@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
               key: 'id'
             }
           },
-          jobSeekerId: {
+          userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-              model: 'JobSeekerProfiles',
-              key: 'id'
-            }
+              model: 'Users',
+              key: 'id',
+            },
           },
           // Data from JobSeekerProfile at time of application
           skills: {
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull:false
           },
           status: {
-            type: DataTypes.ENUM('Reviewed', 'Shortlisted', 'Rejected', 'Accepted'),
+            type: DataTypes.ENUM('Interview_schedule', 'Shortlisted', 'Rejected', 'Accepted'),
             defaultValue: 'Accepted'
           },
           appliedAt: {

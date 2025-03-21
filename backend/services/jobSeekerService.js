@@ -59,7 +59,7 @@ exports.applyForJob = async (userId, jobId) => {
       const existingApplication = await JobApplication.findOne({
           where: {
               jobId,
-              jobSeekerId: jobSeekerProfile.id
+              userId
           }
       });
 
@@ -73,7 +73,7 @@ exports.applyForJob = async (userId, jobId) => {
       // Create application
       const application = await JobApplication.create({
           jobId,
-          jobSeekerId: jobSeekerProfile.id,
+          userId,
           resumeUrl: jobSeekerProfile.resumeUrl,
           skills: jobSeekerProfile.skills,
           education: jobSeekerProfile.education,

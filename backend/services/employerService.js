@@ -1,7 +1,9 @@
 const { ObjectAttributes } = require('@aws-sdk/client-s3');
 const db = require('../models');
 const { User, EmployerProfile, Company, Job } = db;
-const {s3,PutObjectCommand,getSignedUrl,GetObjectCommand,DeleteObjectCommand}=require('../utils/presign')
+const {s3,PutObjectCommand,getSignedUrl,GetObjectCommand,DeleteObjectCommand}=require('../utils/presign');
+const jobApplication = require('../models/jobApplication');
+const { application } = require('express');
 
 // Company Management
 exports.createCompanyProfile = async (profileData, userId, companyLogo) => {
@@ -300,3 +302,79 @@ exports.getPendingCompanies = async (adminId) => {
     return { error: error.message };
   }
 };
+
+
+exports.getApplication=async(userId)=>{
+
+  try {
+    const company = await Company.findOne({
+      where: { employeeId: userId }
+    });
+   
+    if (!company) {
+      return { error: 'Company profile not found' };
+    }
+
+    const jobs = await Job.findAll({
+      where: { companyId: company.id },
+      order: [['createdAt', 'DESC']],
+      attributes:['id','title'],
+       include:{
+        model:db.JobApplication,
+        as:'applications',
+        include:{
+          model:db.User,
+          as:'user',
+          attributes:['name','email']
+        }
+       }
+    })
+
+    const jobApplications = jobs.flatMap(job => 
+      job.applications.map(application => ({
+        id: application.id,           
+        jobId: application.jobId,
+        jobTitle: job.title,
+        name:application.user.name,
+        email:application.user.email,
+        skills: application.skills,
+        education: application.education,
+        experience: application.experience,
+        certifications: application.certifications,
+        resumeUrl: application.resumeUrl,
+        status: application.status,
+        appliedAt: application.appliedAt
+      }))
+    );
+
+
+    return {
+      success: true,
+      data: jobApplications
+    };
+  } catch (error) {
+    return { error: error.message };
+  }
+}
+exports.updateApplication=async(req)=>{
+  
+    const {id,status}=req.body
+    try
+    {
+       const JobApplication=await db.JobApplication.findByPk(id);
+       JobApplication.status=status;
+       await JobApplication.save();
+
+       
+
+       return {
+        success: true,
+        data:JobApplication
+       }
+    }
+    catch(error)
+    {
+      return {error:error.message}
+    }
+
+}

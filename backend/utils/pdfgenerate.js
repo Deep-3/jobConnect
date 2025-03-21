@@ -61,3 +61,18 @@ exports.subscriptionMail= async(data,templateName) => {
 
   return html;
 }
+
+
+exports.interviewMail= async(data,templateName) => {
+  // console.log(__dirname);
+  const templatePath = path.resolve(__dirname, `../templates/${templateName}`);
+  console.log(templatePath);
+  const templateHtml = fs.readFileSync(templatePath, 'utf-8');
+  const compiledTemplate = hbs.compile(templateHtml);
+   const html=compiledTemplate({
+    ...data,
+    currentYear: new Date().getFullYear()
+  })
+
+  return html;
+}
