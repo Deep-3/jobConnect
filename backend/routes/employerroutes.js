@@ -21,7 +21,6 @@ router.post('/company/verify/:companyId', isAuthenticated, isAdmin, employerCont
 //interviewschedule
 router.post('/jobapplication',isAuthenticated,isEmployer,interviewcontroller.scheduleInterview)
 router.get('/jobapplication/:id',isAuthenticated,isEmployer,interviewcontroller.getInterviewDetails)
-router.get('/jobapplication/token',isAuthenticated,isEmployer,interviewcontroller.getVideoToken)
 
 
 router.get('/getapplication',isAuthenticated,isEmployer,employerController.getApplication)

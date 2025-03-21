@@ -122,7 +122,7 @@ exports.scheduleInterview = async (req, res) => {
           include: [{
             model: db.User,
             as: 'user',
-            attributes: ['name', 'email']
+            attributes: ['name','email']
           }, {
             model: db.Job,
             as: 'job',
@@ -138,18 +138,10 @@ exports.scheduleInterview = async (req, res) => {
         });
       }
   
-      // Generate fresh token for video meeting
-      const token = generateVideoToken();
   
       return res.json({
         success: true,
-        data: {
-          interview,
-          meeting: {
-            meetingId: interview.meetingId,
-            token
-          }
-        }
+        data:interview
       });
   
     } catch (error) {
@@ -161,31 +153,5 @@ exports.scheduleInterview = async (req, res) => {
   };
   
 
-  exports.getVideoToken = async (req, res) => {
-    try {
-      const token = generateVideoToken();
-      return res.json({ token });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        error: error.message
-      });
-    }
-  };
-  
-  const generateVideoToken = () => {
-    const API_KEY ="f943becd-47fd-458f-a430-f9ac43e8acac";
-    const SECRET_KEY = "ead9c661a2b11616f6524fec931e7480bccebc47b59a2d13995e43b10508a050";
-  
-    const payload = {
-      apikey: API_KEY,
-      permissions: ["allow_join", "allow_mod"],
-      version: 2,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60
-    };
-  
-    return jwt.sign(payload, SECRET_KEY);
-  };
   
   
