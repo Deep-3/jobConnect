@@ -4,68 +4,156 @@ import { FaRegEdit } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
- 
-   const navigate=useNavigate();
-  const {User}=useSelector((state)=>state.auth)
+  const navigate = useNavigate();
+  const { User } = useSelector((state) => state.auth);
+
   return (
-   <div className='flex flex-col ml-40 gap-10 mt-10'>
-       
-       <div className='text-3xl font-semibold'>
-          My Profile
-       </div>
-   
-       <div className='w-[80%] bg-[white] rounded-lg shadow-lg bg-white flex justify-between px-20 items-center'>
-    
-        <div className=' py-[18px] flex gap-3 m-3 justify-between items-center'>
-        <div>
-         <img className="w-18 h-18 rounded-full flex items-center justify-center" src={`https://api.dicebear.com/5.x/initials/svg?seed=${User?.name.split(" ")[0]} ${User?.name.split(" ")[User.name.split(" ").length-1]}&backgroundColor=0B877D`} alt="logo" /> 
-         </div>
-         <div >
-            <p className='text-xl font-bold'>{User?.name}</p>
-            <p className='font-semibold'>{User?.email}</p>
-         </div>
+    <div className='min-h-screen bg-gray-50 py-10'>
+      <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
+        {/* Header */}
+        <div className='mb-10'>
+          <h1 className='text-3xl font-bold text-gray-900'>
+            My Profile
+          </h1>
         </div>
-        
-         <div className='flex items-center gap-2 px-4 py-2 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267]' >
-            <button className='flex items-center gap-2' onClick={()=>navigate("/settings")}>
-              Edit <FaRegEdit className='w-3 h-3'/>
-            </button>
-         </div>
-       </div>
 
-       <div className='rounded-lg shadow-lg flex flex-col gap-3 bg-white w-[80%]'>
-          <div className='flex py-6 mx-3 px-17 justify-between items-center'>
-            <div className='text-xl font-bold'>
-              About
+        {/* Profile Card */}
+        <div className='bg-white rounded-xl shadow-md p-6 mb-8'>
+          <div className='flex justify-between items-center'>
+            <div className='flex items-center gap-6'>
+              <div className='relative'>
+                <img 
+                  className="w-24 h-24 rounded-full border-4 border-[#0B877D]" 
+                  src={`https://api.dicebear.com/5.x/initials/svg?seed=${User?.name.split(" ")[0]} ${User?.name.split(" ")[User.name.split(" ").length-1]}&backgroundColor=0B877D`} 
+                  alt="Profile" 
+                /> 
+              </div>
+              <div>
+                <h2 className='text-2xl font-bold text-gray-900'>{User?.name}</h2>
+                <p className='text-gray-600 font-medium'>{User?.email}</p>
+              </div>
             </div>
-            <div className='flex items-center gap-2 px-4 py-2 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267]' >
-            <button className='flex items-center gap-2 ' onClick={()=>navigate("/settings")}>
-              Edit <FaRegEdit className='w-3 h-3' />
+            <button 
+              onClick={() => navigate("/settings")}
+              className='flex items-center gap-2 px-6 py-3 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267] transition-all duration-300 shadow-sm hover:shadow-md'
+            >
+              Edit Profile <FaRegEdit className='w-4 h-4'/>
             </button>
-         </div>
-          </div>
-          <div className='px-20 text-start mb-2'>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Iste rerum explicabo quod eaque doloribus voluptates at id, ratione minima est eius hic illum repellendus! Soluta dolore aliquid, labore voluptas totam cum repellendus esse fugiat provident dolor eveniet consequatur, error quae ea libero, officia amet delectus.
           </div>
         </div>
 
-        <div className='rounded-lg shadow-lg flex flex-col gap-3 bg-white w-[80%] mb-20'>
-        <div className='flex py-6 mx-3 px-17 justify-between items-center'>
-            <div className='text-xl font-bold'>
-              Personal Details
+        {/* About Section */}
+        <div className='bg-white rounded-xl shadow-md mb-8'>
+          <div className='p-6 border-b border-gray-100'>
+            <div className='flex justify-between items-center'>
+              <h3 className='text-xl font-bold text-gray-900'>About</h3>
+              <button 
+                onClick={() => navigate("/settings")}
+                className='flex items-center gap-2 px-4 py-2 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267] transition-all duration-300'
+              >
+                Edit <FaRegEdit className='w-3 h-3'/>
+              </button>
             </div>
-            <div className='flex items-center gap-2 px-4 py-2 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267]' >
-            <button className='flex items-center gap-2' onClick={()=>navigate("/settings")}>
-              Edit <FaRegEdit className='w-3 h-3'/>
-            </button>
-         </div>
           </div>
-        <div className='px-20'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque sint asperiores odio reprehenderit et consectetur perspiciatis, laudantium corrupti est! Provident earum ad repellat omnis eum a quisquam vel ipsam enim corrupti optio illum quae veritatis, sit, consequatur iusto et delectus. Repellendus dolores culpa ipsa repellat.</div>
+          <div className='p-6'>
+            <p className='text-gray-600'>
+              {User?.jobSeekerProfile?.about || "Please write about yourself"}
+            </p>
+          </div>
         </div>
 
+        {/* Details Section */}
+        <div className='bg-white rounded-xl shadow-md mb-8'>
+          <div className='p-6 border-b border-gray-100'>
+            <div className='flex justify-between items-center'>
+              <h3 className='text-xl font-bold text-gray-900'>Details</h3>
+              <button 
+                onClick={() => navigate("/settings")}
+                className='flex items-center gap-2 px-4 py-2 bg-[#0B877D] text-white font-medium rounded-lg hover:bg-[#097267] transition-all duration-300'
+              >
+                Edit <FaRegEdit className='w-3 h-3'/>
+              </button>
+            </div>
+          </div>
 
-   </div>
-  )
-}
+          <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+            {/* Skills */}
+            <div className='bg-gray-50 rounded-xl p-6 hover:shadow-md transition-all duration-300'>
+              <div className='flex items-center gap-3 mb-4'>
+                <span className='text-2xl'>💡</span>
+                <h4 className='text-lg font-semibold text-gray-900'>Skills</h4>
+              </div>
+              <p className='text-gray-600 ml-10'>
+                {User?.jobSeekerProfile?.skills || 
+                <span className="text-gray-400 italic">No skills added yet</span>}
+              </p>
+            </div>
 
-export default Profile
+            {/* Resume */}
+            <div className='bg-gray-50 rounded-xl p-6 hover:shadow-md transition-all duration-300'>
+              <div className='flex items-center gap-3 mb-4'>
+                <span className='text-2xl'>📄</span>
+                <h4 className='text-lg font-semibold text-gray-900'>Resume</h4>
+              </div>
+              <div className='ml-10'>
+                {User?.jobSeekerProfile?.resumeUrl ? (
+                  <a 
+                    href="https://jobplatform.s3.ap-south-1.amazonaws.com/company-logos/3-1740566391826-tuvoc_technologies_logo.jpg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className='inline-flex items-center gap-2 text-[#0B877D] hover:text-[#097267] font-medium transition-all duration-300'
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    View Resume
+                  </a>
+                ) : (
+                  <span className="text-gray-400 italic">No resume uploaded</span>
+                )}
+              </div>
+            </div>
+
+            {/* Certifications */}
+            <div className='bg-gray-50 rounded-xl p-6 hover:shadow-md transition-all duration-300'>
+              <div className='flex items-center gap-3 mb-4'>
+                <span className='text-2xl'>🏆</span>
+                <h4 className='text-lg font-semibold text-gray-900'>Certifications</h4>
+              </div>
+              <p className='text-gray-600 ml-10'>
+                {User?.jobSeekerProfile?.certifications || 
+                <span className="text-gray-400 italic">No certifications added yet</span>}
+              </p>
+            </div>
+
+            {/* Experience */}
+            <div className='bg-gray-50 rounded-xl p-6 hover:shadow-md transition-all duration-300'>
+              <div className='flex items-center gap-3 mb-4'>
+                <span className='text-2xl'>💼</span>
+                <h4 className='text-lg font-semibold text-gray-900'>Experience</h4>
+              </div>
+              <p className='text-gray-600 ml-10'>
+                {User?.jobSeekerProfile?.experience || 
+                <span className="text-gray-400 italic">No experience added yet</span>}
+              </p>
+            </div>
+
+            {/* Education */}
+            <div className='bg-gray-50 rounded-xl p-6 hover:shadow-md transition-all duration-300'>
+              <div className='flex items-center gap-3 mb-4'>
+                <span className='text-2xl'>🎓</span>
+                <h4 className='text-lg font-semibold text-gray-900'>Education</h4>
+              </div>
+              <p className='text-gray-600 ml-10'>
+                {User?.jobSeekerProfile?.education || 
+                <span className="text-gray-400 italic">No education details added yet</span>}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
