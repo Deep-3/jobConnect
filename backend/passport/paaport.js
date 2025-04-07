@@ -127,29 +127,7 @@ passport.deserializeUser(async (data, done) => {
     // Normal user lookup
 
     let user = await db.User.findByPk(data);
-    if(user.role==='jobseeker')
-    {
-       user=await db.User.findOne({
-        where: { id: data },
-        attributes:['name','email','role'],
-       include:{
-        model:db.JobSeekerProfile,
-       as: 'jobSeekerProfile',
-       attributes:['skills','resumeUrl','certifications','experience','education']
-       }})
-      //  console.log("hello",user)
-    }
-    if(user.role==='employer')
-      {
-         user=await db.User.findOne({
-          where: { id: data },
-          attributes:['name','email'],
-         include:{
-          model:db.EmployerProfile,
-     as: 'employerProfile',
-         }})
-        //  console.log("hello",user)
-      }
+    
     done(null, user);
   } catch (err) {
     done(err);

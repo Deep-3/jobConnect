@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { FaBriefcase, FaBuilding } from 'react-icons/fa';
@@ -9,6 +9,7 @@ const SelectRole = () => {
   const dispatch=useDispatch()
   const navigate = useNavigate();
   const location = useLocation();
+  const[loading,setloading]=useState(false);
   const email = location.state?.email;
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const SelectRole = () => {
 
   const handleRoleSelect = async (role) => {
     try {
+      setloading(true);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/select-role`, {
         method: 'POST',
         headers: {
@@ -39,9 +41,21 @@ const SelectRole = () => {
     } catch (error) {
       console.error('Role selection error:', error);
       toast.error('Something went wrong');
+    }finally
+    {
+      setloading(false);
     }
   };
 
+  if(loading)
+  {
+    return (
+      <div className=' h-screen w-full flex justify-center items-center'>
+              <div className="loader"></div>
+      </div>
+
+    );
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-white p-4">
       <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">

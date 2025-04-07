@@ -1,12 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { FaRegEdit } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Profile = () => {
+
   const navigate = useNavigate();
   const { User } = useSelector((state) => state.auth);
 
+  const [loading,setLoading]=useState(false);
+  const [profileDetails,setprofileDetails]=useState(null);
+   const profileData=async()=>{
+     try
+     {
+     setLoading(true);
+    const response=await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/profile`,{
+      credentials:'include'
+    })
+    const profileData=await response.json();
+    setprofileDetails(profileData.data)
+  }
+    catch(error) {
+      setprofileDetails(null);
+      toast.error(error.message || "Failed to fetch profile data");
+      console.error("Profile fetch error:", error);
+  }
+  finally
+  {
+    setLoading(false);
+  }
+   }
+
+   useEffect(()=>{
+        profileData();
+   },[])
+
+   if (loading) {
+    return (
+      <div className=' h-screen w-full flex justify-center items-center'>
+              <div className="loader"></div>
+      </div>
+
+    );
+  }
   return (
     <div className='min-h-screen bg-gray-50 py-10'>
       <div className='max-w-6xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -57,7 +94,7 @@ const Profile = () => {
           </div>
           <div className='p-6'>
             <p className='text-gray-600'>
-              {User?.jobSeekerProfile?.about || "Please write about yourself"}
+              {profileDetails?.about || "Please write about yourself"}
             </p>
           </div>
         </div>
@@ -84,7 +121,7 @@ const Profile = () => {
                 <h4 className='text-lg font-semibold text-gray-900'>Skills</h4>
               </div>
               <p className='text-gray-600 ml-10'>
-                {User?.jobSeekerProfile?.skills || 
+                {profileDetails?.skills || 
                 <span className="text-gray-400 italic">No skills added yet</span>}
               </p>
             </div>
@@ -96,9 +133,9 @@ const Profile = () => {
                 <h4 className='text-lg font-semibold text-gray-900'>Resume</h4>
               </div>
               <div className='ml-10'>
-                {User?.jobSeekerProfile?.resumeUrl ? (
+                {profileDetails?.resumeUrl ? (
                   <a 
-                    href="https://jobplatform.s3.ap-south-1.amazonaws.com/company-logos/3-1740566391826-tuvoc_technologies_logo.jpg"
+                    href={profileDetails?.resumeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className='inline-flex items-center gap-2 text-[#0B877D] hover:text-[#097267] font-medium transition-all duration-300'
@@ -121,7 +158,7 @@ const Profile = () => {
                 <h4 className='text-lg font-semibold text-gray-900'>Certifications</h4>
               </div>
               <p className='text-gray-600 ml-10'>
-                {User?.jobSeekerProfile?.certifications || 
+                {profileDetails?.certifications || 
                 <span className="text-gray-400 italic">No certifications added yet</span>}
               </p>
             </div>
@@ -133,7 +170,7 @@ const Profile = () => {
                 <h4 className='text-lg font-semibold text-gray-900'>Experience</h4>
               </div>
               <p className='text-gray-600 ml-10'>
-                {User?.jobSeekerProfile?.experience || 
+                {profileDetails?.experience || 
                 <span className="text-gray-400 italic">No experience added yet</span>}
               </p>
             </div>
@@ -145,7 +182,7 @@ const Profile = () => {
                 <h4 className='text-lg font-semibold text-gray-900'>Education</h4>
               </div>
               <p className='text-gray-600 ml-10'>
-                {User?.jobSeekerProfile?.education || 
+                {profileDetails?.education || 
                 <span className="text-gray-400 italic">No education details added yet</span>}
               </p>
             </div>

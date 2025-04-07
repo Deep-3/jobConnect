@@ -40,7 +40,7 @@ exports.getAllJob=async(req,res)=>{
         }
         else
         {
-            job=await db.Job.findAll({
+            job=await db.Job.findAndCountAll({
                 include:{
                     model:db.Company,
                     as:'company',

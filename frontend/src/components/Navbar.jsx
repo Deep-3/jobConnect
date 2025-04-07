@@ -48,7 +48,6 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
 
       if (response.ok) {
         dispath(logout());
-       
         toast.success('Logged out successfully', {
           id: loadingToast
         });
@@ -80,7 +79,6 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
         credentials: 'include'
       }
     );
-
     if (response.ok) {
       // Remove the notification from the state
       setNotifications(prev => 
@@ -280,11 +278,8 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
               ) : (
                 <>
                   <button
-                    onClick={() => {
+                    onClick={async() => {
 
-                      if(store.getState().ui.isSidebarOpen) {
-                        dispath(toggleSidebar());
-                      }
 
                       setConfirmmodal({
                       text1: "Are You Sure ?",
@@ -297,10 +292,6 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
                       btn2Text: "Cancel",
                       btn2Handler: () => {
                         setConfirmmodal(null)
-                        if(!store.getState().ui.isSidebarOpen)
-                        {
-                          dispath(toggleSidebar());
-                        }
                       }
                   })
                 }

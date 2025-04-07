@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { IoMdSend } from "react-icons/io";
 import { FaUsers } from 'react-icons/fa';
-import toast from 'react-hot-toast'; // Add this import
+import {toast} from 'react-hot-toast'; // Add this import
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleLoading } from '../redux/slices/UiSlice';
 
@@ -62,7 +62,7 @@ function Community() {
 
     const socket = io(import.meta.env.VITE_BACKEND_URL);
     socketRef.current = socket;
-
+console.log(socket);
     socket.emit('userConnected', User.id);
     socket.emit('joinCommunity', {
       userId: User.id,
@@ -75,6 +75,14 @@ function Community() {
       });
 
     });
+    socket.on('profilereminder', (data) => {
+      console.log('Profile reminder received:', data); 
+      toast.success('Please complete your profile', {
+        duration: 5000,
+        position: 'top-center'
+      });
+    });
+
 
     // Add error handling
     socket.on('connect_error', (error) => {

@@ -16,6 +16,8 @@ import Subcription from './components/Subcription';
 import PaymentSuccess from './components/PaymentSuccess';
 import Chatbot from './components/Chatbot';
 import Profile from './components/Profile';
+import Settings from './components/Setting';
+import Myjob from './components/Myjob';
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import {setLogin, setUser} from "./redux/slices/AuthSlice"
@@ -40,7 +42,7 @@ function App() {
         if (data.user) {
           if(data.user.pendingRegistration)
           {
-              navigate('/selectrole',{state:{email:userData.user.email},replace:true});
+              navigate('/selectrole',{state:{email:data.user.email},replace:true});
               toast.error("please complete your verification")
           }
           else
@@ -97,6 +99,8 @@ function App() {
         <Route path="/subcription" element={<Subcription/>} />
         <Route path="/paymentsuccess" element={<PaymentSuccess/>} />
        <Route path="/profile" element={<Profile/>}/>
+       <Route path="/my-jobs" element={<Myjob/>}/>
+       <Route path="/settings" element={<Settings/>}/>
         <Route 
           path="*" 
           element={

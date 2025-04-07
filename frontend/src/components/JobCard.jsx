@@ -1,13 +1,46 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {add,remove} from "../redux/slices/JobSlice"
 import {toast} from 'react-hot-toast'
-
-
+import Confirmmodal from '../common/confirmmodal'
+import { toggleLoading } from '../redux/slices/UiSlice'
 const JobCard = ({job}) => {
+  
+  const [confirmmodal,setConfirmmodal]=useState(null);
   const jobs = useSelector((state) => state.job);
   const dispatch = useDispatch();
 
+  const applyJob=async(JobId)=>{
+
+    try
+    {
+      dispatch(toggleLoading());
+      const response=await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/jobs/${JobId}/apply`,{
+        method:'POST',
+        credentials:'include'
+      })
+      const data=await response.json()
+      if(data.success)
+      {
+        toast.success(data.message);
+      }
+      else
+      {
+        toast.error(data.message);
+      }
+      console.log(data);
+    }catch(error)
+    {
+      console.error(error);
+      toast.error(error)
+    }
+    finally
+    {
+      dispatch(toggleLoading());
+    }
+
+  }
+ 
   const savejob = () => {
     dispatch(add(job));
     toast.success("save job");
@@ -17,6 +50,7 @@ const JobCard = ({job}) => {
     dispatch(remove(job.id));
     toast.error("remove job");
   }
+ 
 
   return (
     <div className="w-full rounded-lg shadow-lg bg-white p-4 m-4">
@@ -79,7 +113,23 @@ const JobCard = ({job}) => {
         </div>
 
         <div className="flex justify-between items-center gap-4 mt-4 pt-4 border-t">
-          <button className="border text-black px-6 py-2 rounded-md hover:bg-gray-100 transition">
+          <button onClick={
+            () => {
+               setConfirmmodal({
+                text1: "Are You Sure ?",
+                text2: "Applied Job",
+                btn1Text: "Apply",
+                btn1Handler:  () => {
+                    applyJob(job.id);
+                  setConfirmmodal(null);
+                },
+                btn2Text: "Cancel",
+                btn2Handler: () => {
+                  setConfirmmodal(null)
+                }
+               })
+          }
+        }className="border text-black px-6 py-2 rounded-md hover:bg-gray-100 transition">
             Apply
           </button>
           
@@ -100,6 +150,8 @@ const JobCard = ({job}) => {
           )}
         </div>
       </div>
+
+      {confirmmodal && <Confirmmodal modalData={confirmmodal}/>}
     </div>
   );
 }

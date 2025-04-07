@@ -127,6 +127,7 @@ exports.callbackLinkedin= async (req, res) => {
             { 
               success: true, 
               isNewUser: true,
+              email:'${profile.email}',
               message: 'Please select your role'
             },
             '${process.env.FRONTEND_URL}'

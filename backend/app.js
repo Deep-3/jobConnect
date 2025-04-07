@@ -30,6 +30,7 @@ const io=SocketIO(server,{
   } 
 });
 const fileUpload = require('express-fileupload');
+const {profilereminer}=require('./utils/profilereminder');
 
 app.use(fileUpload({
   createParentPath: true,
@@ -79,13 +80,15 @@ app.use(session({
   }
 }));
 
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use((req, res, next) => {
+  
   console.log('Cookies received:', req.cookies);  // Incoming cookies
   console.log('Session:', req.session);          // Session data
   next();
 });
-app.use(passport.initialize());
-app.use(passport.session());
 
 // app.use((req, res, next) => {
 //     // console.log('Session:', req.session);
@@ -148,8 +151,9 @@ io.on('connection', (socket) => {
           global.connectedUsers.set(userId, []);
       }
       global.connectedUsers.get(userId).push(socket.id);
-
+     
       console.log('User connected:', userId);
+      profilereminer(userId);
       console.log('All connected users:', Array.from(global.connectedUsers.entries()));
       socket.on('joinCommunity', (userData) => {
         // Verify if user is job seeker (you might want to add this check)

@@ -5,6 +5,7 @@ import { toggleLoading } from '../redux/slices/UiSlice';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 
 const FindJob = () => {
+  const [count,setcount]=useState(null);
   const [page, setPage] = useState(1);
   const [totalpage, setTotalpage] = useState(1);
   const [posts, setPosts] = useState([]);
@@ -56,7 +57,6 @@ const FindJob = () => {
 
   // Load paginated data
   useEffect(() => {
-    // Only load paginated data if not filtering
     if (!isFiltering) {
       const loadData = async () => {
         dispatch(toggleLoading());
@@ -67,7 +67,8 @@ const FindJob = () => {
           const data = await response.json();
           setPosts(data.data.rows);
           setTotalpage(data.totalpage);
-          setFilteredPosts(data.data.rows);
+          setFilteredPosts(data.data.rows)
+          setcount(data.data.count);
         } catch (error) {
           console.error("Error loading jobs:", error);
         } finally {
@@ -211,7 +212,7 @@ const FindJob = () => {
           <p className="text-sm sm:text-base text-gray-600">
             {isFiltering 
               ? `Found ${filteredPosts.length} jobs matching your search criteria` 
-              : `Discover ${filteredPosts.length} job opportunities waiting for you`}
+              : `Discover ${count} job opportunities waiting for you`}
           </p>
           
           {isFiltering && (

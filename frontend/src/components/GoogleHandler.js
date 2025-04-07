@@ -1,5 +1,5 @@
 // src/components/GoogleHandler.js
-import { useNavigate } from 'react-router-dom';
+import { replace, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../redux/slices/AuthSlice';
@@ -47,7 +47,7 @@ const googleHandler = () => {
     const messageHandler = (event) => {
         if (event.origin === import.meta.env.VITE_BACKEND_URL && !isProcessing) {
             isProcessing = true;
-          const { success, isNewUser, message } = event.data;
+          const { success, isNewUser, message,email } = event.data;
           
           // Remove event listener first
           window.removeEventListener('message', messageHandler);
@@ -55,7 +55,7 @@ const googleHandler = () => {
           if (success) {
             if (isNewUser) {
               toast.success('Please select your role');
-              navigate('/selectrole');
+              navigate('/selectrole',{state:{email},replace:true});
             } else {
               toast.success('Login successful');
               dispatch(setLogin(true));

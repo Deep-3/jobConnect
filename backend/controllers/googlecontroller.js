@@ -51,6 +51,7 @@ exports.authGoogle = (req, res, next) => {
               { 
                 success: true, 
                 isNewUser: true,
+                email:'${user.pendingRegistration.email}',
                 message: 'Please select your role'
               },
               '${process.env.FRONTEND_URL}'

@@ -10,15 +10,15 @@ exports.capturePayment=async(req,res)=>{
 
     try
     {
+       
        const jobseeker=db.JobSeekerProfile.findOne({where:{
         userId:req.user.id
        }})
-       if(jobseeker.subscriptionPlan!=='basic')
+       if(['premium','basic'].includes(jobseeker.subscriptionPlan))
        {
            return res.status(500).json({
             success:false,
             message:'Your Subscription Plan Alredy Exits'
-
            })
        }
     }
@@ -79,7 +79,6 @@ exports.verifySignature=async(req,res)=>{
      if(digest ===req.body.razorpay_signature)
         {
             // const {userId}=req.body.payload.payment.entity.notes;
-            
             try
             {
                 const profile=await db.JobSeekerProfile.findOne({where:{
@@ -98,11 +97,9 @@ exports.verifySignature=async(req,res)=>{
                     userEmail: profile.user.email,
                     subscriptionPlan: profile.subscriptionPlan,
                     subscriptionStatus: profile.subscriptionStatus
-                    
                 }
                 const html = await subscriptionMail(data, 'subscription.hbs');
                      const emailResult=await sendMail(profile.user.email,"Subscription Plan",html);
-
                      return res.redirect(`${process.env.FRONTEND_URL}/paymentsuccess`);
                 return res.status(200).json({
                     success:true,

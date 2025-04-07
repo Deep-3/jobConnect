@@ -19,7 +19,7 @@ exports.applyForJob = async (userId, jobId) => {
       if (!jobSeekerProfile) {
           return {
               success: false,
-              error: 'Job seeker profile not found'
+              message: 'Job seeker profile not found'
           };
       }
 
@@ -34,7 +34,7 @@ exports.applyForJob = async (userId, jobId) => {
       if (Object.values(missingFields).some(field => field)) {
           return {
               success: false,
-              error: 'Please complete your profile before applying',
+              message: 'Please complete your profile before applying',
               requiresProfileCompletion: true,
               missingFields
           };
@@ -51,7 +51,7 @@ exports.applyForJob = async (userId, jobId) => {
       if (!job) {
           return {
               success: false,
-              error: 'Job not found or not accepting applications'
+              message: 'Job not found or not accepting applications'
           };
       }
 
@@ -66,7 +66,7 @@ exports.applyForJob = async (userId, jobId) => {
       if (existingApplication) {
           return {
               success: false,
-              error: 'You have already applied for this job'
+              message: 'You have already applied for this job'
           };
       }
 
@@ -133,7 +133,7 @@ exports.applyForJob = async (userId, jobId) => {
       console.error('Job application error:', error);
       return {
           success: false,
-          error: 'Failed to submit application. Please try again.'
+          message: 'Failed to submit application. Please try again.'
       };
   }
 };
@@ -153,6 +153,16 @@ exports.getJobSeekerProfile = async (userId) => {
       return { error: 'Profile not found' };
     }
 
+    if(profile.resumeUrl)
+    {
+       const command=new GetObjectCommand({
+        Bucket: process.env.AWS_S3_BUCKET,
+        Key: profile.resumeUrl
+       })
+
+       const url=await getSignedUrl(s3,command);
+       profile.resumeUrl=url;
+    }
     return {
       success: true,
       data: profile
@@ -174,10 +184,11 @@ exports.updateProfile = async (userId, profileData, resumeFile) => {
     }
 
     let updateData = profileData ? {
-      skills: profileData.skills,
-      education: profileData.education,
-      experience: profileData.experience,
-      certifications: profileData.certifications
+      skills: profileData.skills || profile.skills,
+      education: profileData.education || profile.education ,
+      experience: profileData.experience || profile.experience,
+      certifications: profileData.certifications || profile.certifications,
+      about:profileData.about || profile.about
     } : {};
 
     // Handle resume upload if a new file is uploaded
@@ -263,7 +274,7 @@ exports.getMyApplications = async (userId) => {
       // Get all applications with job and company details
       const applications = await JobApplication.findAll({
         where: { 
-          jobSeekerId: jobSeekerProfile.id 
+          UserId:userId
         },
         attributes: ['id', 'status', 'createdAt'],
         include: [{
@@ -273,7 +284,7 @@ exports.getMyApplications = async (userId) => {
           include: [{
             model: Company,
             as: 'company',
-            attributes: ['id', 'companyName']
+            attributes:['companyName','companyLogo']
           }]
         }],
         order: [['createdAt', 'DESC']]
@@ -290,13 +301,10 @@ exports.getMyApplications = async (userId) => {
           location: app.job.location,
           type: app.job.jobType,
           salary: app.job.salary,
-          company: {
-            id: app.job.company.id,
-            location: app.job.company.location
-          }
+          company: app.job.company
         }
       }));
-  
+    console.log(formattedApplications);
       return {
         success: true,
         count: applications.length,

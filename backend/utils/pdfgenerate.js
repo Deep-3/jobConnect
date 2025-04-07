@@ -10,7 +10,6 @@ hbs.registerHelper('eq', function(a, b) {
 
 exports.CSV = (res, data, filename) => {
   const csv = json2csv(data);
-
   res.attachment(filename);
   res.send(csv);
 };

@@ -112,7 +112,7 @@ const Layout = () => {
         
            <div className={`
               fixed left-0 top-[64px] bottom-0 
-              w-[240px] bg-white z-50
+              w-[240px] bg-white
               transform transition-transform duration-300
               ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             `}>

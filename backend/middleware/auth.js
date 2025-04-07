@@ -48,7 +48,7 @@ exports.isAuthenticated = (req, res, next) => {
 };
 
 exports.isEmployer = (req, res, next) => {
-    if (req.user.role !== 'employee' && req.user.role !== 'hr') {
+    if (req.user.role !== "employee") {
         return res.status(403).json({ 
             success:false,
             error: 'Access denied. Only employees can access this resource.' 

@@ -6,15 +6,14 @@ import {Toaster} from "react-hot-toast"
 import { BrowserRouter } from 'react-router-dom'
 import { store } from './redux/Store.js'
 import { Provider } from 'react-redux'
-createRoot(document.getElementById('root')).render(
 
-  
+createRoot(document.getElementById('root')).render(
  <BrowserRouter>
  <Provider store={store}>
  <App />
    <Toaster 
         position="top-center"
-        reverseOrder={false}
+        reverseOrder={false}  
         toastOptions={{
           duration: 3000,
           style: {
