@@ -2,7 +2,7 @@ import {initializeApp} from "firebase/app"
 import {getMessaging,getToken,onMessage} from "firebase/messaging"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCvw9R1-eDt_q9Z38R_UiULnuuvav7n5N0",
+    apiKey:import.meta.env.FIRBASE_API_KEY,
     authDomain: "jobbportal-ee406.firebaseapp.com",
     projectId: "jobbportal-ee406",
     storageBucket: "jobbportal-ee406.firebasestorage.app",
@@ -11,7 +11,7 @@ const firebaseConfig = {
     measurementId: "G-N3TH9PHX3Z"
   };
 
-  const vapikey="BPwoYgIRpDzpz3zSBWAMI0GUq7cwdUG0mGzCN6JylFTWmfGVN9esLWaYuDkVv0W6N_Ok39Cz7H9L5Qk-KK4Ix28"
+  const vapikey=import.meta.env.VAPIKEY;
 
   const app=initializeApp(firebaseConfig)
 
