@@ -26,7 +26,7 @@ function Community() {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [messages]);
-  // Fetch old messages
+  
   useEffect(() => {
     if (!isJobSeeker) return;
     fetchOldMessages();
@@ -77,10 +77,7 @@ console.log(socket);
     });
     socket.on('profilereminder', (data) => {
       console.log('Profile reminder received:', data); 
-      toast.success('Please complete your profile', {
-        duration: 5000,
-        position: 'top-center'
-      });
+      toast.success('Please complete your profile');
     });
 
 

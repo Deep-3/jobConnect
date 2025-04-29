@@ -4,7 +4,7 @@ import Iconbutton from './Iconbutton';
 const Confirmmodal = ({modalData}) => {
   return (
     <>
-      <div className="fixed inset-0 z-[1000] !mt-0 bg-black/50 grid place-items-center overflow-auto backdrop-blur-[1px]">
+      <div className="fixed inset-0 z-[1000] !mt-0 bg-black/50 grid place-items-center overflow-auto bg-opacity-50">
         <div className="w-11/12 max-w-[350px] rounded-lg border border-black-500 bg-white p-6">
           <p className="text-2xl font-semibold text-gray-800">
             {modalData?.text1}

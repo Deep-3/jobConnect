@@ -46,8 +46,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       isVerified: {
         type: DataTypes.BOOLEAN,
-        defaultValue: false,  // Initially false
+        defaultValue: false,  
       },
+      fcmtoken:{
+        type: DataTypes.STRING,
+        allowNull: true,
+      }
     },
      {
       timestamps: true   

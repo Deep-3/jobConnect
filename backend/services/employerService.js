@@ -8,6 +8,7 @@ const { application } = require('express');
 // Company Management
 exports.createCompanyProfile = async (profileData, userId, companyLogo) => {
   try {
+    console.log("profiledata",profileData)
     // Basic validation
     if (!profileData.companyName) {
       return { error: 'Company name is required' };
@@ -97,6 +98,9 @@ exports.createCompanyProfile = async (profileData, userId, companyLogo) => {
     return { error: error.message };
   }
 };
+
+
+
 
 exports.getCompanyProfile = async (userId) => {
   try {
@@ -190,10 +194,10 @@ exports.createJob = async (userId, jobData) => {
     });
 
     if (!company) {
-      return { error: 'Not add any company.first add your comapny' };
+      return { error: 'please add your company' };
     }
     if (!company.isVerified) {
-      return { error: 'Verified company profile required to post jobs' };
+      return { error: 'your company is not verified currently' };
     }
 
    
@@ -212,7 +216,7 @@ exports.createJob = async (userId, jobData) => {
   }
 };
 
-exports.getCompanyJobs = async (userId) => {
+exports.getCompanyJobs = async(userId) => {
   try {
     const company = await Company.findOne({
       where: { employeeId: userId }
@@ -249,7 +253,7 @@ exports.verifyCompany = async (adminId, companyId) => {
     });
 
     if (!admin) {
-      return { error: 'Only admin can verify companies' };
+      return { error: 'Only admin can verify companies'};
     }
 
     const company = await Company.findByPk(companyId);
@@ -365,8 +369,6 @@ exports.updateApplication=async(req)=>{
        JobApplication.status=status;
        await JobApplication.save();
 
-       
-
        return {
         success: true,
         data:JobApplication
@@ -378,3 +380,5 @@ exports.updateApplication=async(req)=>{
     }
 
 }
+
+

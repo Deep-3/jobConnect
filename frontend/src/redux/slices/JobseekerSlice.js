@@ -9,6 +9,7 @@ const JobseekerSlice= createSlice({
         addJobApplication:(state,action)=>{
             state.JobApplication=action.payload
             },
+        
     }
 })
 

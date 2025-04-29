@@ -9,12 +9,12 @@ const crypto=require("crypto");
 exports.capturePayment=async(req,res)=>{
 
     try
-    {
-       
-       const jobseeker=db.JobSeekerProfile.findOne({where:{
+    { 
+       const jobseeker=await db.JobSeekerProfile.findOne({where:{
         userId:req.user.id
        }})
-       if(['premium','basic'].includes(jobseeker.subscriptionPlan))
+
+       if(["premium","basic"].includes(jobseeker.subscriptionPlan))
        {
            return res.status(500).json({
             success:false,
@@ -67,7 +67,7 @@ exports.capturePayment=async(req,res)=>{
 exports.verifySignature=async(req,res)=>{
 
     //  const webhookSecret="12345678";
-
+  console.log("...",req.body);
     //  const signature=req.headers["x-razorpay-signature"];
     // console.log("razorpay",signature);
     const body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id;
@@ -100,10 +100,10 @@ exports.verifySignature=async(req,res)=>{
                 }
                 const html = await subscriptionMail(data, 'subscription.hbs');
                      const emailResult=await sendMail(profile.user.email,"Subscription Plan",html);
-                     return res.redirect(`${process.env.FRONTEND_URL}/paymentsuccess`);
+                    //  return res.redirect(`${process.env.FRONTEND_URL}/paymentsuccess`);
                 return res.status(200).json({
                     success:true,
-                    message:"valid signature",
+                    message:"Payment sucessfully",
                     subscription:[profile.subscriptionPlan,profile.subscriptionStatus]
                     });
             }

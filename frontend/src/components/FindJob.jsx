@@ -5,11 +5,11 @@ import { toggleLoading } from '../redux/slices/UiSlice';
 import { FaSearch, FaMapMarkerAlt } from 'react-icons/fa';
 
 const FindJob = () => {
-  const [count,setcount]=useState(null);
+  const [count, setCount] = useState(null);
   const [page, setPage] = useState(1);
   const [totalpage, setTotalpage] = useState(1);
   const [posts, setPosts] = useState([]);
-  const [allJobs, setAllJobs] = useState([]); // Store all jobs for filtering
+  const [allJobs, setAllJobs] = useState([]); 
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [isFiltering, setIsFiltering] = useState(false);
   const [filters, setFilters] = useState({
@@ -21,7 +21,6 @@ const FindJob = () => {
   const { isSidebarOpen, isLoading } = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
-  // Job Types for dropdown
   const jobTypes = [
     { id: 1, name: 'Full-Time' },
     { id: 2, name: 'Part-Time' },
@@ -29,7 +28,6 @@ const FindJob = () => {
     { id: 4, name: 'Contract' }
   ];
 
-  // Locations for dropdown
   const locations = [
     { id: 1, name: 'Ahmedabad' },
     { id: 2, name: 'Surat' },
@@ -37,48 +35,29 @@ const FindJob = () => {
     { id: 4, name: 'Remote' }
   ];
 
-  // Load all jobs once for filtering
+  // Load initial data
   useEffect(() => {
-    const loadAllJobs = async () => {
+    const loadData = async () => {
+      dispatch(toggleLoading());
       try {
-        // Call API to get all jobs
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/0/alljob`, {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/${page}/alljob`, {
           credentials: 'include'
         });
         const data = await response.json();
-        setAllJobs(data.data);
+        setPosts(data.data.rows);
+        setFilteredPosts(data.data.rows);
+        setTotalpage(data.totalpage);
+        setCount(data.data.count);
+        // Also set allJobs for filtering
+        setAllJobs(data.data.rows);
       } catch (error) {
-        console.error("Error loading all jobs:", error);
+        console.error("Error loading jobs:", error);
+      } finally {
+        dispatch(toggleLoading());
       }
     };
-    
-    loadAllJobs();
-  }, []);
-
-  // Load paginated data
-  useEffect(() => {
-    if (!isFiltering) {
-      const loadData = async () => {
-        dispatch(toggleLoading());
-        try {
-          const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/jobseeker/${page}/alljob`, {
-            credentials: 'include'
-          });
-          const data = await response.json();
-          setPosts(data.data.rows);
-          setTotalpage(data.totalpage);
-          setFilteredPosts(data.data.rows)
-          setcount(data.data.count);
-        } catch (error) {
-          console.error("Error loading jobs:", error);
-        } finally {
-          dispatch(toggleLoading());
-        }
-      };
-      
-      loadData();
-    }
-  }, [page, isFiltering]);
+    loadData();
+  }, [page]);
 
   // Handle filter changes
   const handleFilterChange = (e) => {
@@ -87,49 +66,45 @@ const FindJob = () => {
       ...prev,
       [name]: value
     }));
-    
-    setIsFiltering(true);
   };
 
-  // Apply filters to all jobs
+  // Apply filters
   useEffect(() => {
-    // Check if any filter is active
-    const hasActiveFilters = 
-      filters.search !== '' || 
-      filters.jobType !== '' || 
-      filters.location !== '';
-    
-    setIsFiltering(hasActiveFilters);
-    
-    if (hasActiveFilters && allJobs.length > 0) {
-      // Apply filters to all jobs
-      let result = [...allJobs];
-      
-      if (filters.search) {
-        result = result.filter(job => 
-          job.title?.toLowerCase().includes(filters.search.toLowerCase()) ||
-          job.company.companyName?.toLowerCase().includes(filters.search.toLowerCase()) ||
-          job.description?.toLowerCase().includes(filters.search.toLowerCase())
-        );
-      }
-      
-      if (filters.jobType) {
-        result = result.filter(job => 
-          job.jobType?.toLowerCase().includes(filters.jobType.toLowerCase())
-        );
-      }
-      
-      if (filters.location) {
-        result = result.filter(job => 
-          job.location?.toLowerCase().includes(filters.location.toLowerCase())
-        );
-      }
-      
-      setFilteredPosts(result);
-    } 
-  }, [filters, allJobs, posts]);
+    const applyFilters = () => {
+      let filtered = [...posts];
 
-  // Handle clear filters
+      // Search filter
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        filtered = filtered.filter(job => 
+          job.title.toLowerCase().includes(searchTerm) ||
+          job.company.companyName.toLowerCase().includes(searchTerm) ||
+          job.description.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Job Type filter
+      if (filters.jobType) {
+        filtered = filtered.filter(job => 
+          job.jobType.toLowerCase() === filters.jobType.toLowerCase()
+        );
+      }
+
+      // Location filter
+      if (filters.location) {
+        filtered = filtered.filter(job => 
+          job.location.toLowerCase() === filters.location.toLowerCase()
+        );
+      }
+
+      setFilteredPosts(filtered);
+      setIsFiltering(filters.search || filters.jobType || filters.location);
+    };
+
+    applyFilters();
+  }, [filters, posts]);
+
+  // Clear filters
   const handleClearFilters = () => {
     setFilters({
       search: '',
@@ -137,7 +112,7 @@ const FindJob = () => {
       location: ''
     });
     setIsFiltering(false);
-    setFilteredPosts(posts); // Reset to current page posts
+    setFilteredPosts(posts);
   };
 
   if (isLoading) {
@@ -189,6 +164,7 @@ const FindJob = () => {
               ))}
             </select>
           </div>
+
           {/* Location Dropdown */}
           <div className="md:w-48 flex relative">
             <FaMapMarkerAlt className='absolute w-3 h-4 left-2 top-1/2 -translate-y-1/2 text-[#0B877D]'/>
@@ -198,7 +174,7 @@ const FindJob = () => {
               onChange={handleFilterChange}
               className="w-full px-6 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-[#0B877D]"
             >
-              <option value="" className='flex'>All Locations</option>
+              <option value="">All Locations</option>
               {locations.map(loc => (
                 <option key={loc.id} value={loc.name}>
                   {loc.name}
@@ -243,13 +219,12 @@ const FindJob = () => {
         ))}
       </div>
 
-      {/* Pagination - Only show when not filtering */}
+      {/* Pagination */}
       {filteredPosts.length > 0 && !isFiltering && (
         <div className="mt-5">
           <div>
             {totalpage > 0 && (
               <div className="flex justify-center gap-4">
-                {/* Previous Button */}
                 <button 
                   onClick={() => setPage(prev => Math.max(prev - 1, 1))}
                   disabled={page === 1}
@@ -262,11 +237,10 @@ const FindJob = () => {
                   Previous
                 </button>
                 
-                {/* Page Numbers */}
                 <div className="flex items-center gap-2">
-                  {[...Array(totalpage).keys()].map(num => (
+                  {[...Array(totalpage)].map((_, num) => (
                     <button
-                      key={num + 1}
+                      key={num}
                       onClick={() => setPage(num + 1)}
                       className={`w-10 h-10 rounded-full ${
                         page === num + 1
@@ -279,7 +253,6 @@ const FindJob = () => {
                   ))}
                 </div>
                 
-                {/* Next Button */}
                 <button
                   onClick={() => setPage(prev => Math.min(prev + 1, totalpage))}
                   disabled={page === totalpage}

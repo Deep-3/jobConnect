@@ -273,11 +273,7 @@ const Settings = () => {
             >
               <input {...getInputProps()} />
               
-              {isDragActive && (
-                <div className="absolute inset-0 bg-[#0B897D]/10 flex items-center justify-center">
-                  <p className="text-[#0B897D] font-medium">Drop your PDF file here...</p>
-                </div>
-              )}
+             
               
               {previewSource ? (
                 <div className='flex w-full flex-col p-6'>

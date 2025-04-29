@@ -14,7 +14,7 @@ import {
   FaUsers,
   FaSearch
 } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { MdDashboard,MdWork} from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleSidebar } from "../redux/slices/UiSlice";
 
@@ -27,7 +27,6 @@ const Sidebar = () => {
 
   const jobseekerMenu=[
     { path: "/", icon: FaHome, label: "Home" },
-    { path: "/dashboard", icon: MdDashboard, label: "Dashboard" },
     { path: "/profile", icon: FaUserAlt, label: "Profile" },
     { path: "/my-jobs", icon: FaBriefcase, label: "My Jobs" },
     { path: "/savejob", icon: FaBookmark, label: "Saved Jobs" },
@@ -38,14 +37,21 @@ const Sidebar = () => {
   ];
   const employeeMenu= [
     { path: "/", icon: FaHome, label: "Home" },
-    { path: "/dashboard", icon: MdDashboard, label: "Dashboard" },
+    { path: "/employer/dashboard", icon: MdDashboard, label: "Dashboard" },
+    { path: "/postedjob", icon: MdWork, label: "Posted Job" },
     { path: "/profile", icon: FaUserAlt, label: "Profile" },
+    { path: "/companies", icon: FaBuilding, label: "Companies" },
+    { path: "/settings", icon: FaCog, label: "Settings" },
+  ];
+
+  const AdminMenu= [
+    { path: "/", icon: FaHome, label: "Home" },
+    { path: "/admin/dashboard", icon: MdDashboard, label: "Dashboard" },
     { path: "/companies", icon: FaBuilding, label: "Companies" },
     { path: "/messages", icon: FaEnvelope, label: "Messages" },
     { path: "/settings", icon: FaCog, label: "Settings" },
   ];
-  const menuItems =User?.role==='jobseeker'?jobseekerMenu:employeeMenu;
-
+  const menuItems =User?.role==='jobseeker'?jobseekerMenu:User?.role==="employee"?employeeMenu:AdminMenu;
   const publicMenuItems = [
     { path: "/", icon: FaHome, label: "Home" },
     { path: "/companies", icon: FaBuilding, label: "Contact Us" },
@@ -89,7 +95,7 @@ const Sidebar = () => {
       </div>
       <div className="overflow-hidden">
         <h3 className="font-medium text-gray-800 truncate">{User?.name.split(" ").slice(0,2).join(" ").toLowerCase()}</h3>
-        <p className="text-sm text-gray-500 truncate">{User?.email}</p>
+        <p className="text-[12px] text-gray-500 truncate font-semibold">{User?.email}</p>
       </div>
     </>
   ) : (

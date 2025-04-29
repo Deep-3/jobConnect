@@ -39,12 +39,15 @@ next()
 // };
 
 exports.isAuthenticated = (req, res, next) => {
+   
     if (!req.isAuthenticated()) {
+      
         return res.status(401).json({ 
             success:false,
             error: 'Unauthorized. Please log in.' });
     }
     next();
+            
 };
 
 exports.isEmployer = (req, res, next) => {

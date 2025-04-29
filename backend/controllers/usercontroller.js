@@ -97,3 +97,32 @@ exports.selectRole=async (req, res) => {
     res.status(500).json({ error: 'Registration failed' });
   }
 }
+
+exports.addfcmtoken=async(req,res)=>{
+  try{
+        const {fcmtoken}=req.body;
+
+        const user = await db.User.update(
+          { fcmtoken },  // what to update
+          {
+              where: {
+                  id: req.user.id
+              }
+          }
+      );
+      const updatedUser = await db.User.findByPk(req.user.id);
+        return res.status(200).json({
+          success:true,
+          message:'FCM token added successfully',
+        })
+  }
+  catch(error)
+  {
+    console.log(error)
+    return res.status(500).json({
+      message:'Error adding FCM token',
+      error:error.message
+      })
+  }
+
+}

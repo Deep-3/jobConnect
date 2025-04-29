@@ -2,7 +2,7 @@ const express = require('express');
 const userController = require('../controllers/usercontroller');
 const axios=require('axios');
 const router = express.Router();
-const {checkRegistrationFlow}=require('../middleware/auth')
+const {isAuthenticated}=require('../middleware/auth')
 
 
 router.post('/', userController.createUser);
@@ -14,6 +14,8 @@ router.post('/', userController.createUser);
 
 // Route for OTP verification
 router.post('/verifyotp', userController.verifyOtp);
+
+router.put('/addfcmtoken',userController.addfcmtoken)
 
 
 

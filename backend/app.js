@@ -12,6 +12,7 @@ const notificationroutes=require('./routes/notificationroutes')
 const communityroutes=require('./routes/communityroutes')
 const paymentroutes=require('./routes/paymentroutes')
 const chatroutes=require('./routes/chatbotroutes')
+const adminroutes=require('./routes/adminroutes')
 
 const session = require('express-session');
 const http = require('http');
@@ -30,7 +31,8 @@ const io=SocketIO(server,{
   } 
 });
 const fileUpload = require('express-fileupload');
-const {profilereminer}=require('./utils/profilereminder');
+// const {profilereminer}=require('./utils/profilereminder');
+const cron=require('./utils/profilereminder');
 
 app.use(fileUpload({
   createParentPath: true,
@@ -120,6 +122,7 @@ app.use('/notifications',notificationroutes)
 app.use('/community',communityroutes)
 app.use('/payment',paymentroutes)
 app.use('/chatbot',chatroutes)
+app.use('/admin',adminroutes)
 
 const PORT = process.env.PORT || 3000;
 
@@ -153,7 +156,6 @@ io.on('connection', (socket) => {
       global.connectedUsers.get(userId).push(socket.id);
      
       console.log('User connected:', userId);
-      profilereminer(userId);
       console.log('All connected users:', Array.from(global.connectedUsers.entries()));
       socket.on('joinCommunity', (userData) => {
         // Verify if user is job seeker (you might want to add this check)

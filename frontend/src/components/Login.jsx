@@ -74,7 +74,7 @@ const handleSocialLogin=googleHandler();
           <p className="text-slate-500 text-center mb-5">Sign in to access your account</p>
   
           <form onSubmit={handleSubmit} className="space-y-3.5">
-            {/* Email Input */}
+
             <div className="relative">
               <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
               <input
@@ -109,7 +109,6 @@ const handleSocialLogin=googleHandler();
                 {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
               </span>
             </div>
-  
             {/* Remember & Forgot */}
             <div className="flex justify-between items-center text-sm">
               <label className="flex items-center gap-2 text-slate-500">
@@ -162,8 +161,7 @@ const handleSocialLogin=googleHandler();
             
             <button 
               onClick={() => handleSocialLogin('linkedin')}
-              className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all"
-            >
+              className="flex items-center justify-center gap-2 py-2.5 px-4 border border-slate-200 rounded-lg text-slate-800 hover:bg-slate-50 hover:border-[#0077b5] hover:text-[#0077b5] transition-all">
               <FaLinkedin className='text-[#0077b5]' />
               <span>LinkedIn</span>
             </button>
@@ -175,7 +173,7 @@ const handleSocialLogin=googleHandler();
             
            <NavLink to="/register" className="text-[#0B877D] font-medium hover:text-[#097267] transition-colors">
            Sign Up
-            </NavLink>
+           </NavLink>
           </p>
         </div>
       </div>

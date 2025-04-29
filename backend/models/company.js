@@ -98,14 +98,14 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true
       },
       status: {
-        type: DataTypes.ENUM('pending', 'active', 'suspended'),
+        type: DataTypes.ENUM('pending', 'active', 'reject'),
         allowNull: false,
         defaultValue: 'pending'
       },
       socialLinks: {
         type: DataTypes.JSON,
         allowNull: true,
-        defaultValue: {}
+        defaultValue: []
       },
       companyCode: {
         type: DataTypes.STRING,

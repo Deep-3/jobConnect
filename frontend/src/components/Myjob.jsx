@@ -50,12 +50,10 @@ const Myjob = () => {
         }
     };
 
-   
-
     if(loading)
     {
-         return (<div>
-             loading...
+         return (<div className='h-screen w-full flex justify-center items-center'>
+               <div className='loader'></div>
          </div>)
     }
 
@@ -67,12 +65,13 @@ const Myjob = () => {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                        {applications.map((application) => (
+                
                             <div
                                 key={application.id}
                                 className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
                             >
                                 <div className="flex items-center mb-4">
-                                    <img
+                                    <img 
                                         src={application.job.company.companyLogo}
                                         alt={application.job.company.companyName}
                                         className="w-12 h-12 object-cover rounded-lg mr-4"
@@ -105,7 +104,7 @@ const Myjob = () => {
                                             setSelectedApplication(application);
                                             setIsModalOpen(true);
                                         }}
-                                        className="text-[#0B877D] hover:text-[#097267] font-semibold"
+                                        className="cursor text-[#0B877D] hover:text-[#097267] font-semibold"
                                     >
                                         View Details
                                     </button>

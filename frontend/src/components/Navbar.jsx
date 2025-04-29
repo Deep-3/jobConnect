@@ -107,7 +107,7 @@ function Navbar({   notifications, setNotifications, markAllAsRead }) {
   };
 
   return (
-    <nav className="bg-white shadow-md z-40 sticky top-0">
+    <nav className="bg-white shadow-md z-40 sticky top-0 ">
       <div className="max-w-8xl mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Left Section */}

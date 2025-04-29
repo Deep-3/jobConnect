@@ -54,8 +54,12 @@ exports.login = async(req, res, next) => {
 };
 
 exports.logout = (req, res) => {
+
+  
   req.logout((err) => {
     if (err) return res.status(500).json({ error: 'Logout failed.' });
+
+    
     res.json({ session:req.session,message: 'Logout successful.' });
   });
 };

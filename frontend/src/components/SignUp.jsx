@@ -73,7 +73,6 @@ const dispatch=useDispatch()
       <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-[400px] mx-4">
         <h2 className="text-2xl text-slate-800 mb-1.5 text-center">Create Account</h2>
         <p className="text-slate-500 text-center mb-5">Sign up to get started</p>
-
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {/* Name Input */}
           <div className="relative">
