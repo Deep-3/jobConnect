@@ -6,7 +6,7 @@ import {
     FaDollarSign,
     FaClock
   } from 'react-icons/fa';
-import image from "../assets/react.svg"
+  
   const Home = () => {
     return (
       <div className="min-h-full p-4 overflow-auto">
@@ -126,9 +126,7 @@ import image from "../assets/react.svg"
         </div>
 
       </div>
-       
-      
-       
+        
     );
   };
   

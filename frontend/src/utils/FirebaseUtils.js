@@ -2,17 +2,17 @@ import {initializeApp} from "firebase/app"
 import {getMessaging,getToken,onMessage} from "firebase/messaging"
 
 const firebaseConfig = {
-    apiKey:import.meta.env.FIRBASE_API_KEY,
-    authDomain: "jobbportal-ee406.firebaseapp.com",
-    projectId: "jobbportal-ee406",
-    storageBucket: "jobbportal-ee406.firebasestorage.app",
-    messagingSenderId: "574976396640",
-    appId: "1:574976396640:web:70c9db912876af647ce205",
-    measurementId: "G-N3TH9PHX3Z"
-  };
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+};
 
   const vapikey=import.meta.env.VAPIKEY;
-
+ 
   const app=initializeApp(firebaseConfig)
 
   const messaging=getMessaging(app)

@@ -1,6 +1,7 @@
 // App.jsx
 import { useState, useEffect } from 'react';
 import { Route, Routes,useNavigate } from "react-router-dom";
+import CookieConsent from "react-cookie-consent";
 import Home from './components/Home';
 import About from './components/About';
 import Contact from './components/Contact';
@@ -23,6 +24,8 @@ import PostedJob from './components/Employer/PostedJob';
 import JobApplication from './components/Employer/JobApplication';
 import Dashboard from './components/Employer/Dashboard';
 import AdminDashboard from './components/Admin/AdminDashboard';
+import PrivateRoute from './components/Auth/PrivateRoute';
+import OpenRoute from './components/Auth/OpenRoute';
 import './App.css';
 import { useDispatch, useSelector } from 'react-redux';
 import {setLogin, setUser} from "./redux/slices/AuthSlice"
@@ -148,23 +151,25 @@ function App() {
         <Route index element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/community" element={<Community />} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/register" element={<SignUp/>} />
-        <Route path="/otp" element={<OTP />} />
-        <Route path="/selectrole" element={<SelectRole/>} />
+        <Route path="/community" element={<PrivateRoute>
+          <Community/>
+        </PrivateRoute>} />
+        <Route path="/login" element={<OpenRoute><Login/></OpenRoute>} />
+        <Route path="/register" element={<OpenRoute><SignUp/></OpenRoute>} />
+        <Route path="/otp" element={<OpenRoute><OTP/></OpenRoute>} />
+        <Route path="/selectrole" element={<OpenRoute><SelectRole/></OpenRoute>} />
         <Route path="/findjob" element={<FindJob/>} />
         <Route path="/savejob" element={<SaveJob/>} />
-        <Route path="/subcription" element={<Subcription/>} />
+        <Route path="/subcription" element={<PrivateRoute><Subcription/></PrivateRoute>} />
         <Route path="/payment-success" element={<PaymentSuccess/>} />
        <Route path="/profile" element={<Profile/>}/>
-       <Route path="/my-jobs" element={<Myjob/>}/>
-       <Route path="/settings" element={<Settings/>}/>
-       <Route path="/companies" element={User?.role==='employee'?<CompanyForm/>:<VerifyCompany/>}/>
-       <Route path="/postedjob" element={<PostedJob/>}/>
-       <Route path="/jobapplication/:id" element={<JobApplication/>}/>
-       <Route path="/employer/dashboard" element={<Dashboard/>}/>
-       <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
+       <Route path="/my-jobs" element={<PrivateRoute><Myjob/></PrivateRoute>}/>
+       <Route path="/settings" element={<PrivateRoute><Settings/></PrivateRoute>}/>
+       <Route path="/companies" element={User?.role==='employee'?<PrivateRoute><CompanyForm/></PrivateRoute>:<PrivateRoute><VerifyCompany/></PrivateRoute>}/>
+       <Route path="/postedjob" element={<PrivateRoute><PostedJob/></PrivateRoute>}/>
+       <Route path="/jobapplication/:id" element={<PrivateRoute><JobApplication/></PrivateRoute>}/>
+       <Route path="/employer/dashboard" element={<PrivateRoute><Dashboard/></PrivateRoute>}/>
+       <Route path="/admin/dashboard" element={<PrivateRoute><AdminDashboard/></PrivateRoute>}/>
 
 
 
@@ -185,6 +190,18 @@ function App() {
       </Route>
     </Routes>
     {isLogin && <Chatbot/>}
+    <CookieConsent
+  location="bottom"
+  buttonText="Accept"
+  declineButtonText="Decline"
+  enableDeclineButton
+  style={{ background: "#222" }}
+  buttonStyle={{ color: "#fff", background: "#0B877D" }}
+  declineButtonStyle={{ color: "#fff", background: "#d9534f" }}
+>
+  This website uses cookies to enhance the user experience.{" "}
+ 
+</CookieConsent>
 
     </>
    

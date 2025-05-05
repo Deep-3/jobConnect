@@ -33,7 +33,7 @@ const SelectRole = () => {
       if (response.ok) {
         dispatch(setLogin(true));
         toast.success(`Registered successfully as ${role}`);
-        navigate(role === 'jobseeker' ? '/jobseeker/dashboard' : '/employee/dashboard',{replace:true});
+        navigate('/',{replace:true});
       } else {
         const data = await response.json();
         toast.error(data.error || 'Role selection failed');
@@ -100,7 +100,9 @@ const SelectRole = () => {
           You can't change your role after selection
         </p>
       </div>
+      
     </div>
+    
   );
 };
 

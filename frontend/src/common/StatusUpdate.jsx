@@ -1,21 +1,22 @@
 import React from 'react'
 import { useState } from 'react';
-import {toast} from "react-hot-toast"
+import { toast } from "react-hot-toast"
 
 const StatusUpdate = ({ application, seteditmodal, onStatusUpdate }) => {
   const [status, setStatus] = useState(application.status);
-  const [loading,setloading]=useState(false);
+  const [loading, setloading] = useState(false);
   
   const handleSubmit = async (e) => {
       e.preventDefault();
       try {
+        setloading(true)
           const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/employer/jobapplication/update-status`, {
               method: 'PUT',
               credentials: 'include',
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({ status,id:application.id })
+              body: JSON.stringify({ status, id: application.id })
           });
 
           const data = await response.json();
@@ -28,6 +29,7 @@ const StatusUpdate = ({ application, seteditmodal, onStatusUpdate }) => {
       } catch (error) {
           console.error(error);
           toast.error('Failed to update status');
+          setloading(false)
       }
   };
 
@@ -59,9 +61,8 @@ const StatusUpdate = ({ application, seteditmodal, onStatusUpdate }) => {
                       <button
                           type="submit"
                           className="px-4 py-2 bg-[#0B877D] text-white rounded-md hover:bg-[#097267]"
-                          onClick={setloading(true)}
                       >
-                          {!loading?"Update":"wait..."}
+                          {!loading ? "Update" : "wait..."}
                       </button>
                   </div>
               </form>
@@ -70,4 +71,4 @@ const StatusUpdate = ({ application, seteditmodal, onStatusUpdate }) => {
   );
 };
 
-export default StatusUpdate
+export default StatusUpdate 
