@@ -165,7 +165,7 @@ io.on('connection', (socket) => {
     
       // Handle community messages
       socket.on('sendCommunityMessage', (messageData) => {
-        io.to('community').emit('communityMessage', messageData);
+        io.to('community').emit('communityMessage',messageData);
       });
     
 
@@ -233,11 +233,12 @@ global.io = io;
 app.get('/', (req, res) => {
   console.log(req.user)
     if (req.user) {
-      res.send(`Hello, ${req.user.name}`);  // Access `req.user.name` or any other property
+      res.send(`Hello, ${req.user.name}`);  
     } else {
       res.send('Hello, guest!');
     }
   });
+
   app.get('/employee',(req,res)=>{
     if(req.user)
     {
@@ -261,6 +262,7 @@ app.get('/', (req, res) => {
     // console.log(success)
     res.send('<a href="/lauth/linkedin">login with linkedin</a><br><a href="/gauth/google">login with google</a>')
   })
+
 
   app.post('/send',async(req,res)=>
   {
